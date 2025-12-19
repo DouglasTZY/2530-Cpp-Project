@@ -3,6 +3,70 @@
 #include <cstring> 
 using namespace std; 
 
+struct Product {
+	int id; 
+	char name[50]; 
+	double price; 
+	int quantity; 
+}; 
+
+struct Node {
+	Product data; 
+	Node* next; 
+}; 
+
+class ProductList {
+    private: 
+        Node* head; 
+
+    public: 
+        ProductList() {
+            head = NULL; 
+        }    
+
+        ~ProductList() {
+            Node* temp; 
+            while(head != NULL) {
+                temp = head; 
+                head = head->next; 
+                delete temp; 
+            } 
+        } 
+
+        void addProduct(Product p) {
+            Node* newNode = new Node; 
+            newNode->data = p; 
+            newNode->next = NULL; 
+
+            if(head == NULL) {
+                head = newNode; 
+            } else {
+                Node* cur = head; 
+                while(cur->next != NULL) {
+                    cur = cur->next; 
+                } 
+                cur->next = newNode; 
+            }
+        } 
+
+        void displayProducts() {
+            Node* cur = head; 
+            if(cur == NULL) {
+                cout << "No products available.\n"; 
+                return; 
+            } 
+
+            cout << "\nID\tName\t\tPrice\tQty\n"; 
+            while(cur != NULL) {
+                cout << cur->data.id << "\t"
+                     << cur->data.name << "\t\t"
+                     << cur->data.price << "\t"
+                     << cur->data.quantity << endl;
+                cur = cur->next;
+            }
+        }
+}; 
+
 class User {
 	protected: 
 		char username[30]; 
@@ -21,42 +85,41 @@ class User {
 		virtual void menu() = 0; // pure virtual 
 }; 
 
-class Staff : public User {
-	public: 
-		Staff() {
-			// constructor 
-		} 
+class Staff : public User { 
+    private: 
+        static ProductList plist; // all staff can use 
 
-		~Staff() {
-			// destructor 
-		} 
+	public: 
+		Staff() {} 
+		~Staff() {} 
 
 		void menu() {
 			int choice; 
+            Product p; 
 
 			do {
-            cout << "\n--- Staff Menu ---\n";
-            cout << "1. Add Product\n";
-            cout << "2. Display Products\n";
-            cout << "0. Logout\n";
-            cout << "Enter choice: ";
-            cin >> choice;
+                cout << "\n--- Staff Menu ---\n";
+                cout << "1. Add Product\n";
+                cout << "2. Display Products\n";
+                cout << "0. Logout\n";
+                cout << "Enter choice: ";
+                cin >> choice;
 
-            switch(choice) {
-                case 1:
-                    cout << "Add Product (coming soon)\n";
-                    break;
-                case 2:
-                    cout << "Display Products (coming soon)\n";
-                    break;
-                case 0:
-                    cout << "Logging out...\n";
-                    break;
-                default:
-                    cout << "Invalid choice!\n";
-            }
-        } while(choice != 0);
-    }
+                switch(choice) {
+                    case 1:
+                        cout << "Add Product (coming soon)\n";
+                        break;
+                    case 2:
+                        cout << "Display Products (coming soon)\n";
+                        break;
+                    case 0:
+                        cout << "Logging out...\n";
+                        break;
+                    default:
+                        cout << "Invalid choice!\n";
+                }
+            } while(choice != 0);
+        } 
 }; 
 
 class Customer : public User {
