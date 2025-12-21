@@ -64,6 +64,32 @@ class ProductList {
                      << cur->data.quantity << endl;
                 cur = cur->next;
             }
+        } 
+
+        void sortByPrice() {
+            if(head == NULL || head->next == NULL) {
+                return; 
+            } 
+
+            bool swapped; 
+            Node* ptr1; 
+            Node* 1ptr = NULL; 
+
+            do {
+                swapped = false; 
+                ptr1 = head; 
+
+                while(ptr1->next != 1ptr) {
+                    if(ptr1->data.price > ptr1->next->data.price) {
+                        Product temp = ptr1->data; 
+                        ptr1->data = ptr1->next->data; 
+                        ptr1->next->data = temp; 
+                        swapped = true; 
+                    } 
+                    ptr1 = ptr1->next; 
+                } 
+                1ptr = ptr1; 
+            } while(swapped); 
         }
 }; 
 
@@ -100,7 +126,8 @@ class Staff : public User {
 			do {
                 cout << "\n--- Staff Menu ---\n";
                 cout << "1. Add Product\n";
-                cout << "2. Display Products\n";
+                cout << "2. Display Products\n"; 
+                cout << "3. Sort Products by Price\n"; 
                 cout << "0. Logout\n";
                 cout << "Enter choice: ";
                 cin >> choice;
@@ -111,7 +138,11 @@ class Staff : public User {
                         break;
                     case 2:
                         cout << "Display Products (coming soon)\n";
-                        break;
+                        break; 
+                    case 3: 
+                        plist.sortByPrice(); 
+                        cout << "Products sorted by price.\n"; 
+                        break;     
                     case 0:
                         cout << "Logging out...\n";
                         break;
