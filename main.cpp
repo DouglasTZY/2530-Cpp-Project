@@ -112,6 +112,36 @@ class ProductList {
 
             return false; 
         } 
+
+        void saveToFile() {
+            ofstream outFile("product.txt"); 
+
+            Node* cur = head; 
+            while(cur != NULL) {
+                outFile << cur->data.id << "|"
+                        << cur->data.name << "|" 
+                        << cur->data.price << "|" 
+                        << cur->data.quantity << endl; 
+                cur = cur->next;       
+            } 
+
+            outFile.close(); 
+        } 
+
+        void loadFromFile() {
+            ifstream inFile("product.txt"); 
+            if(!inFile) return; 
+
+            Product p; 
+            char line[200]; 
+
+            while(inFile.getline(line, 200)) {
+                sscanf(line, "%d|%[^|]|%lf|%d", &p.id, p.name, &p.price, &p.quantity); 
+                addProduct(p); 
+            } 
+
+            inFile.close(); 
+        } 
 }; 
 
 class User {
@@ -133,10 +163,8 @@ class User {
 }; 
 
 class Staff : public User { 
-    private: 
+    public: 
         static ProductList plist; // all staff can use 
-
-	public: 
 		Staff() {} 
 		~Staff() {} 
 
@@ -156,8 +184,25 @@ class Staff : public User {
 
                 switch(choice) {
                     case 1:
-                        cout << "Add Product (coming soon)\n";
+                        cout << "Enter Product ID: ";
+                        cin >> p.id;
+                        cin.ignore();
+
+                        cout << "Enter Product Name: ";
+                        cin.getline(p.name, 50);
+
+                        cout << "Enter Price: ";
+                        cin >> p.price;
+
+                        cout << "Enter Quantity: ";
+                        cin >> p.quantity;
+
+                        plist.addProduct(p);
+                        plist.saveToFile();  
+
+                        cout << "Product added successfully!\n";
                         break;
+
                     case 2:
                         cout << "Display Products (coming soon)\n";
                         break; 
@@ -219,7 +264,12 @@ class Customer : public User {
     }
 }; 
 
+// Define the static member
+ProductList Staff::plist;
+
 int main() { 
+    Staff::plist.loadFromFile(); 
+
 	int choice; 
 	User* user = NULL; 
 
