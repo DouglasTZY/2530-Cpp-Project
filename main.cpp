@@ -238,29 +238,37 @@ class Customer : public User {
 
 		void menu() {
         int choice; 
+        int studentID; 
 
         do {
             cout << "\n--- Customer Menu ---\n";
             cout << "1. View Products\n";
-            cout << "2. Search Product\n";
+            cout << "2. Search Product by ID\n";
+            cout << "3. Sort Products by Price\n";
             cout << "0. Logout\n";
             cout << "Enter choice: ";
             cin >> choice;
 
             switch(choice) {
                 case 1:
-                    cout << "View Products (coming soon)\n";
+                    Staff::plist.displayProducts(); 
                     break;
                 case 2:
-                    cout << "Search Product (coming soon)\n";
-                    break;
+                    cout << "Enter Product ID to search: "; 
+                    cin >> studentID; 
+                    Staff::plist.searchByID(studentID); 
+                    break; 
+                case 3: 
+                    Staff::plist.sortByPrice(); 
+                    cout << "Products sorted by price.\n"; 
+                    break; 
                 case 0:
                     cout << "Logging out...\n";
                     break;
                 default:
                     cout << "Invalid choice!\n";
-            }
-        } while(choice != 0);
+            } 
+        } while(choice != 0); 
     }
 }; 
 
