@@ -113,6 +113,44 @@ class ProductList {
             return false; 
         } 
 
+        bool purchaseProduct(int productID, int quantity) {
+            Node* cur = head; 
+
+            while(cur != NULL) {
+                if(cur->data.id == productID) {
+
+                    if(cur->data.quantity < quantity) {
+                        cout << "Not enough stock.\n"; 
+
+                        return false; 
+                    } 
+
+                    cur->data.quantity -= quantity; 
+                    saveToFile(); // update product.txt 
+
+                    // write in sales.txt 
+                    ofstream saleFile("sales.txt", ios::app); 
+                    saleFile << cur->data.id << "|" 
+                             << cur->data.name << "|" 
+                             << quantity << "|" 
+                             << cur->data.price * quantity << endl; 
+                
+                    saleFile.close();  
+                    
+                    cout << "Purchase successful!\n"; 
+                    cout << "Total: RM " << cur->data.price * quantity << endl; 
+
+                    return true; 
+                } 
+
+                cur = cur->next; 
+            } 
+
+            cout << "Product not found.\n"; 
+
+            return false; 
+        } 
+ 
         void saveToFile() {
             ofstream outFile("product.txt"); 
 
@@ -244,7 +282,8 @@ class Customer : public User {
             cout << "\n--- Customer Menu ---\n";
             cout << "1. View Products\n";
             cout << "2. Search Product by ID\n";
-            cout << "3. Sort Products by Price\n";
+            cout << "3. Sort Products by Price\n"; 
+            cout << "4. Purchase Product\n"; 
             cout << "0. Logout\n";
             cout << "Enter choice: ";
             cin >> choice;
@@ -261,6 +300,16 @@ class Customer : public User {
                 case 3: 
                     Staff::plist.sortByPrice(); 
                     cout << "Products sorted by price.\n"; 
+                    break; 
+                case 4: 
+                    int productID, quantity; 
+
+                    cout << "Enter Product ID: "; 
+                    cin >> productID; 
+                    cout << "Enter Quantity: "; 
+                    cin >> quantity; 
+
+                    Staff::plist.purchaseProduct(productID, quantity); 
                     break; 
                 case 0:
                     cout << "Logging out...\n";
