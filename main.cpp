@@ -150,6 +150,48 @@ class ProductList {
 
             return false; 
         } 
+
+        bool deleteProduct(int productID) {
+            if(head == NULL) {
+                cout << "No products to delete.\n"; 
+
+                return false; 
+            } 
+
+            // if want to delete the first node 
+            if(head->data.id == productID) {
+                Node* temp = head; 
+                head = head->next; 
+                delete temp; 
+                saveToFile(); 
+
+                cout << "Product deleted successfully.\n"; 
+
+                return true; 
+            } 
+
+            Node* cur = head; 
+            Node* prev = NULL; 
+
+            while(cur != NULL && cur->data.id != productID) {
+                prev = cur; 
+                cur = cur->next; 
+            } 
+
+            if(cur == NULL) {
+                cout << "Product not found.\n"; 
+
+                return false; 
+            } 
+
+            prev->next = cur->next; 
+            delete cur; 
+            saveToFile(); 
+
+            cout << "Product deleted successfully.\n"; 
+
+            return true; 
+        } 
  
         void saveToFile() {
             ofstream outFile("product.txt"); 
@@ -216,6 +258,7 @@ class Staff : public User {
                 cout << "2. Display Products\n"; 
                 cout << "3. Sort Products by Price\n"; 
                 cout << "4. Search Product by ID\n"; 
+                cout << "5. Delete Product\n";
                 cout << "0. Logout\n";
                 cout << "Enter choice: ";
                 cin >> choice;
@@ -249,10 +292,17 @@ class Staff : public User {
                         cout << "Products sorted by price.\n"; 
                         break;     
                     case 4: 
-                        int sid;
+                        int searchID;
                         cout << "Enter Product ID to search: ";
-                        cin >> sid;
-                        plist.searchByID(sid);
+                        cin >> searchID;
+                        plist.searchByID(searchID);
+                        break;
+
+                    case 5: 
+                        int deleteID;
+                        cout << "Enter Product ID to delete: ";
+                        cin >> deleteID;
+                        plist.deleteProduct(deleteID);
                         break;
                     case 0:
                         cout << "Logging out...\n";
