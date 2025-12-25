@@ -252,6 +252,11 @@ class Staff : public User {
 			int choice; 
             Product p; 
 
+            cout << "\n--- Staff Login ---\n"; 
+            if(!login("staff.txt")) {
+                return; 
+            } 
+
 			do {
                 cout << "\n--- Staff Menu ---\n";
                 cout << "1. Add Product\n";
@@ -312,6 +317,61 @@ class Staff : public User {
                 }
             } while(choice != 0);
         } 
+
+        bool login(const char* filename) {
+            char userName[30], passWord[30]; 
+            char fileUserName[30], filePassWord[30]; 
+
+            cout << "Username: "; 
+            cin >> userName; 
+            cout << "Password: "; 
+            cin >> passWord; 
+
+            ifstream inFile(filename); 
+            if(!inFile) {
+                cout << "Error opening file.\n"; 
+
+                return false; 
+            } 
+
+            while(inFile >> fileUserName >> filePassWord) {
+                if(strcmp(userName, fileUserName) == 0 && strcmp(passWord, filePassWord) == 0) {
+                    strcpy(username, userName); 
+                    strcpy(password, passWord); 
+                    inFile.close(); 
+
+                    return true; 
+                } 
+            } 
+
+            inFile.close(); 
+            cout << "Invalid login.\n"; 
+
+            return false; 
+        } 
+
+        bool registerUser(const char* filename) {
+            char userName[30], passWord[30];
+
+            cout << "New Username: ";
+            cin >> userName;
+            cout << "New Password: ";
+            cin >> passWord;
+
+            ofstream outFile(filename, ios::app);
+            if (!outFile) {
+                cout << "Error opening file.\n";
+
+                return false;
+            }
+
+            outFile << userName << " " << passWord << endl;
+            outFile.close();
+
+            cout << "Registration successful.\n"; 
+
+            return true;
+        }
 }; 
 
 class Customer : public User {
@@ -324,51 +384,124 @@ class Customer : public User {
 			// destructor 
 		} 
 
-		void menu() {
-        int choice; 
-        int studentID; 
+		bool login(const char* filename) { 
+            char userName[30], passWord[30]; 
+            char fileUserName[30], filePassWord[30]; 
 
-        do {
-            cout << "\n--- Customer Menu ---\n";
-            cout << "1. View Products\n";
-            cout << "2. Search Product by ID\n";
-            cout << "3. Sort Products by Price\n"; 
-            cout << "4. Purchase Product\n"; 
-            cout << "0. Logout\n";
-            cout << "Enter choice: ";
-            cin >> choice;
+            cout << "Username: "; 
+            cin >> userName; 
+            cout << "Password: "; 
+            cin >> passWord; 
 
-            switch(choice) {
-                case 1:
-                    Staff::plist.displayProducts(); 
-                    break;
-                case 2:
-                    cout << "Enter Product ID to search: "; 
-                    cin >> studentID; 
-                    Staff::plist.searchByID(studentID); 
-                    break; 
-                case 3: 
-                    Staff::plist.sortByPrice(); 
-                    cout << "Products sorted by price.\n"; 
-                    break; 
-                case 4: 
-                    int productID, quantity; 
+            ifstream inFile(filename); 
+            if(!inFile) {
+                cout << "Error opening file.\n"; 
 
-                    cout << "Enter Product ID: "; 
-                    cin >> productID; 
-                    cout << "Enter Quantity: "; 
-                    cin >> quantity; 
-
-                    Staff::plist.purchaseProduct(productID, quantity); 
-                    break; 
-                case 0:
-                    cout << "Logging out...\n";
-                    break;
-                default:
-                    cout << "Invalid choice!\n";
+                return false; 
             } 
-        } while(choice != 0); 
-    }
+
+            while(inFile >> fileUserName >> filePassWord) {
+                // cout << "[DEBUG] read: " << fileUserName << " " << filePassWord << endl; 
+
+                if(strcmp(userName, fileUserName) == 0 && strcmp(passWord, filePassWord) == 0) {
+                    inFile.close(); 
+
+                    return true; 
+                } 
+            } 
+
+            inFile.close(); 
+            cout << "Invalid login.\n"; 
+
+            return false; 
+        } 
+
+        bool registerUser(const char* filename) {
+            char userName[30], passWord[30];
+
+            cout << "New Username: ";
+            cin >> userName;
+            cout << "New Password: ";
+            cin >> passWord;
+
+            ofstream outFile(filename, ios::app);
+            if (!outFile) {
+                cout << "Error opening file.\n";
+
+                return false;
+            }
+
+            outFile << userName << " " << passWord << endl;
+            outFile.close();
+
+            cout << "Registration successful.\n"; 
+
+            return true;
+        }
+
+		void menu() {
+            int choice; 
+            int studentID; 
+
+            do {
+                cout << "\n--- Customer ---\n";
+                cout << "1. Login\n";
+                cout << "2. Register\n";
+                cout << "0. Back\n";
+                cout << "Enter choice: ";
+                cin >> choice;
+
+                if (choice == 1) {
+                    if (!login("customer.txt")) return;
+                    break;
+                } else if (choice == 2) {
+                    registerUser("customer.txt");
+                } else if (choice == 0) {
+                    return;
+                }
+            } while (true);
+
+            do {
+                cout << "\n--- Customer Menu ---\n";
+                cout << "1. View Products\n";
+                cout << "2. Search Product by ID\n";
+                cout << "3. Sort Products by Price\n"; 
+                cout << "4. Purchase Product\n"; 
+                cout << "0. Logout\n";
+                cout << "Enter choice: ";
+                cin >> choice;
+
+                switch(choice) {
+                    case 1:
+                        Staff::plist.displayProducts(); 
+                        break;
+                    case 2:
+                        cout << "Enter Product ID to search: "; 
+                        cin >> studentID; 
+                        Staff::plist.searchByID(studentID); 
+                        break; 
+                    case 3: 
+                        Staff::plist.sortByPrice(); 
+                        cout << "Products sorted by price.\n"; 
+                        break; 
+                    case 4: 
+                        int productID, quantity; 
+
+                        cout << "Enter Product ID: "; 
+                        cin >> productID; 
+                        cout << "Enter Quantity: "; 
+                        cin >> quantity; 
+
+                        Staff::plist.purchaseProduct(productID, quantity); 
+                        break; 
+                    case 0:
+                        cout << "Logging out...\n";
+                        break;
+                    default:
+                        cout << "Invalid choice!\n";
+                } 
+            } while(choice != 0); 
+        }
 }; 
 
 // Define the static member

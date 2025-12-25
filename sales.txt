@@ -1,1 +1,2 @@
+id|product|quantity|total price
 101|pencil|3|6
