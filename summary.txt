@@ -1,0 +1,3 @@
+===== SALES SUMMARY REPORT =====
+Total Quantity Sold: 0
+Total Sales Amount: RM 0

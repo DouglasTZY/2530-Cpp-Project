@@ -1,2 +1,2 @@
-id|product|price|quantity(stock/left)
-101|pencil|2|7
+1878039440|hğoğohğo¬ıa|1.56318e+231|1878006816
+101|pencil|2|3

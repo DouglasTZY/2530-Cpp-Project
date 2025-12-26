@@ -242,6 +242,47 @@ class User {
 		virtual void menu() = 0; // pure virtual 
 }; 
 
+class SalesSummary {
+    private: 
+        float totalSales; 
+        int totalQuantity; 
+    
+    public: 
+        SalesSummary() { 
+            totalSales = 0; 
+            totalQuantity = 0; 
+        } 
+        
+        void generateReport() {
+            ifstream inFile("purchase.txt"); 
+            ofstream outFile("summary.txt"); 
+
+            if(!inFile || !outFile) {
+                cout << "Error opening files.\n";  
+
+                return; 
+            } 
+
+            char customerName[30], productName[30]; 
+            int productID, quantity; 
+            float price; 
+
+            while(inFile >> customerName >> productID >> productName >> quantity >> price) {
+                totalQuantity += quantity; 
+                totalSales += quantity * price; 
+            } 
+
+            outFile << "===== SALES SUMMARY REPORT =====\n";
+            outFile << "Total Quantity Sold: " << totalQuantity << endl;
+            outFile << "Total Sales Amount: RM " << totalSales << endl;
+
+            inFile.close();
+            outFile.close();
+
+            cout << "Summary report generated successfully.\n";
+        } 
+}; 
+
 class Staff : public User { 
     public: 
         static ProductList plist; // all staff can use 
@@ -252,10 +293,23 @@ class Staff : public User {
 			int choice; 
             Product p; 
 
-            cout << "\n--- Staff Login ---\n"; 
-            if(!login("staff.txt")) {
-                return; 
-            } 
+            do {
+                cout << "\n--- Staff ---\n";
+                cout << "1. Login\n";
+                cout << "2. Register\n";
+                cout << "0. Back\n";
+                cout << "Enter choice: ";
+                cin >> choice;
+
+                if (choice == 1) {
+                    if (!login("staff.txt")) return;
+                    break;
+                } else if (choice == 2) {
+                    registerUser("staff.txt");
+                } else if (choice == 0) {
+                    return;
+                }
+            } while (true);
 
 			do {
                 cout << "\n--- Staff Menu ---\n";
@@ -263,7 +317,8 @@ class Staff : public User {
                 cout << "2. Display Products\n"; 
                 cout << "3. Sort Products by Price\n"; 
                 cout << "4. Search Product by ID\n"; 
-                cout << "5. Delete Product\n";
+                cout << "5. Delete Product\n"; 
+                cout << "6. Generate Sales Summary\n"; 
                 cout << "0. Logout\n";
                 cout << "Enter choice: ";
                 cin >> choice;
@@ -302,13 +357,17 @@ class Staff : public User {
                         cin >> searchID;
                         plist.searchByID(searchID);
                         break;
-
                     case 5: 
                         int deleteID;
                         cout << "Enter Product ID to delete: ";
                         cin >> deleteID;
                         plist.deleteProduct(deleteID);
+                        break; 
+                    case 6: {
+                        SalesSummary ss; 
+                        ss.generateReport(); 
                         break;
+                    }     
                     case 0:
                         cout << "Logging out...\n";
                         break;
@@ -420,6 +479,7 @@ class Customer : public User {
             char userName[30], passWord[30];
 
             cout << "New Username: ";
+            cin >> ws; 
             cin >> userName;
             cout << "New Password: ";
             cin >> passWord;

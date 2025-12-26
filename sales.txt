@@ -1,2 +1,4 @@
 id|product|quantity|total price
 101|pencil|3|6
+101|pencil|2|4
+101|pencil|2|4
