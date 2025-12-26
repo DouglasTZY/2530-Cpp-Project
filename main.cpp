@@ -129,13 +129,21 @@ class ProductList {
                     saveToFile(); // update product.txt 
 
                     // write in sales.txt 
-                    ofstream saleFile("sales.txt", ios::app); 
-                    saleFile << cur->data.id << "|" 
-                             << cur->data.name << "|" 
-                             << quantity << "|" 
-                             << cur->data.price * quantity << endl; 
-                
-                    saleFile.close();  
+                    try {
+                        ofstream saleFile("sales.txt", ios::app); 
+                        if (!saleFile)
+                            throw "File cannot be opened.";
+
+                        saleFile << cur->data.id << "|" 
+                                 << cur->data.name << "|" 
+                                 << quantity << "|" 
+                                 << cur->data.price * quantity << endl; 
+                    
+                        saleFile.close();  
+                    }
+                    catch (const char* msg) {
+                        cout << msg << endl;
+                    }
                     
                     cout << "Purchase successful!\n"; 
                     cout << "Total: RM " << cur->data.price * quantity << endl; 
@@ -194,33 +202,46 @@ class ProductList {
         } 
  
         void saveToFile() {
-            ofstream outFile("product.txt"); 
+            try {
+                ofstream outFile("product.txt"); 
+                if (!outFile)
+                    throw "File cannot be opened.";
 
-            Node* cur = head; 
-            while(cur != NULL) {
-                outFile << cur->data.id << "|"
-                        << cur->data.name << "|" 
-                        << cur->data.price << "|" 
-                        << cur->data.quantity << endl; 
-                cur = cur->next;       
-            } 
+                Node* cur = head; 
+                while(cur != NULL) {
+                    outFile << cur->data.id << "|"
+                            << cur->data.name << "|" 
+                            << cur->data.price << "|" 
+                            << cur->data.quantity << endl; 
+                    cur = cur->next;       
+                } 
 
-            outFile.close(); 
+                outFile.close(); 
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
+            }
         } 
 
         void loadFromFile() {
-            ifstream inFile("product.txt"); 
-            if(!inFile) return; 
+            try {
+                ifstream inFile("product.txt"); 
+                if(!inFile)
+                    throw "File cannot be opened.";
 
-            Product p; 
-            char line[200]; 
+                Product p; 
+                char line[200]; 
 
-            while(inFile.getline(line, 200)) {
-                sscanf(line, "%d|%[^|]|%lf|%d", &p.id, p.name, &p.price, &p.quantity); 
-                addProduct(p); 
-            } 
+                while(inFile.getline(line, 200)) {
+                    sscanf(line, "%d|%[^|]|%lf|%d", &p.id, p.name, &p.price, &p.quantity); 
+                    addProduct(p); 
+                } 
 
-            inFile.close(); 
+                inFile.close(); 
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
+            }
         } 
 }; 
 
@@ -254,32 +275,36 @@ class SalesSummary {
         } 
         
         void generateReport() {
-            ifstream inFile("purchase.txt"); 
-            ofstream outFile("summary.txt"); 
+            try {
+                ifstream inFile("purchase.txt"); 
+                ofstream outFile("summary.txt"); 
 
-            if(!inFile || !outFile) {
-                cout << "Error opening files.\n";  
+                if(!inFile)
+                    throw "Cannot open purchase.txt.";
+                if(!outFile)
+                    throw "Cannot open summary.txt.";
 
-                return; 
-            } 
+                char customerName[30], productName[30]; 
+                int productID, quantity; 
+                float price; 
 
-            char customerName[30], productName[30]; 
-            int productID, quantity; 
-            float price; 
+                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
+                    totalQuantity += quantity; 
+                    totalSales += quantity * price; 
+                } 
 
-            while(inFile >> customerName >> productID >> productName >> quantity >> price) {
-                totalQuantity += quantity; 
-                totalSales += quantity * price; 
-            } 
+                outFile << "===== SALES SUMMARY REPORT =====\n";
+                outFile << "Total Quantity Sold: " << totalQuantity << endl;
+                outFile << "Total Sales Amount: RM " << totalSales << endl;
 
-            outFile << "===== SALES SUMMARY REPORT =====\n";
-            outFile << "Total Quantity Sold: " << totalQuantity << endl;
-            outFile << "Total Sales Amount: RM " << totalSales << endl;
+                inFile.close();
+                outFile.close();
 
-            inFile.close();
-            outFile.close();
-
-            cout << "Summary report generated successfully.\n";
+                cout << "Summary report generated successfully.\n";
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
+            }
         } 
 }; 
 
@@ -299,7 +324,18 @@ class Staff : public User {
                 cout << "2. Register\n";
                 cout << "0. Back\n";
                 cout << "Enter choice: ";
-                cin >> choice;
+                try {
+                    cin >> choice;
+                    if (cin.fail()) {
+                        throw "Invalid input. Please enter a number.";
+                    }
+                }
+                catch (const char* msg) {
+                    cout << msg << endl;
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    continue;
+                }
 
                 if (choice == 1) {
                     if (!login("staff.txt")) return;
@@ -321,28 +357,51 @@ class Staff : public User {
                 cout << "6. Generate Sales Summary\n"; 
                 cout << "0. Logout\n";
                 cout << "Enter choice: ";
-                cin >> choice;
+                try {
+                    cin >> choice;
+                    if (cin.fail()) {
+                        throw "Invalid input. Please enter a number.";
+                    }
+                }
+                catch (const char* msg) {
+                    cout << msg << endl;
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    continue;
+                }
 
                 switch(choice) {
-                    case 1:
-                        cout << "Enter Product ID: ";
-                        cin >> p.id;
-                        cin.ignore();
+                    case 1: {
+                        try {
+                            cout << "Enter Product ID: ";
+                            cin >> p.id;
+                            if (p.id <= 0) throw "Invalid Product ID";
+                            cin.ignore();
 
-                        cout << "Enter Product Name: ";
-                        cin.getline(p.name, 50);
+                            cout << "Enter Product Name: ";
+                            cin.getline(p.name, 50);
 
-                        cout << "Enter Price: ";
-                        cin >> p.price;
+                            cout << "Enter Price: ";
+                            cin >> p.price;
+                            if (p.price <= 0) throw "Invalid Price";
 
-                        cout << "Enter Quantity: ";
-                        cin >> p.quantity;
+                            cout << "Enter Quantity: ";
+                            cin >> p.quantity;
+                            if (p.quantity < 0) throw "Invalid Quantity";
+                        }
+                        catch (const char* msg) {
+                            cout << msg << endl;
+                            cin.clear();
+                            cin.ignore(1000, '\n');
+                            break;
+                        }
 
                         plist.addProduct(p);
                         plist.saveToFile();  
 
                         cout << "Product added successfully!\n";
                         break;
+                    }
 
                     case 2:
                         cout << "Display Products (coming soon)\n";
@@ -378,58 +437,64 @@ class Staff : public User {
         } 
 
         bool login(const char* filename) {
-            char userName[30], passWord[30]; 
-            char fileUserName[30], filePassWord[30]; 
+            try {
+                char userName[30], passWord[30]; 
+                char fileUserName[30], filePassWord[30]; 
 
-            cout << "Username: "; 
-            cin >> userName; 
-            cout << "Password: "; 
-            cin >> passWord; 
+                cout << "Username: "; 
+                cin >> userName; 
+                cout << "Password: "; 
+                cin >> passWord; 
 
-            ifstream inFile(filename); 
-            if(!inFile) {
-                cout << "Error opening file.\n"; 
+                ifstream inFile(filename); 
+                if(!inFile)
+                    throw "File cannot be opened.";
+
+                while(inFile >> fileUserName >> filePassWord) {
+                    if(strcmp(userName, fileUserName) == 0 && strcmp(passWord, filePassWord) == 0) {
+                        strcpy(username, userName); 
+                        strcpy(password, passWord); 
+                        inFile.close(); 
+
+                        return true; 
+                    } 
+                } 
+
+                inFile.close(); 
+                cout << "Invalid login.\n"; 
 
                 return false; 
-            } 
-
-            while(inFile >> fileUserName >> filePassWord) {
-                if(strcmp(userName, fileUserName) == 0 && strcmp(passWord, filePassWord) == 0) {
-                    strcpy(username, userName); 
-                    strcpy(password, passWord); 
-                    inFile.close(); 
-
-                    return true; 
-                } 
-            } 
-
-            inFile.close(); 
-            cout << "Invalid login.\n"; 
-
-            return false; 
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
+                return false;
+            }
         } 
 
         bool registerUser(const char* filename) {
-            char userName[30], passWord[30];
+            try {
+                char userName[30], passWord[30];
 
-            cout << "New Username: ";
-            cin >> userName;
-            cout << "New Password: ";
-            cin >> passWord;
+                cout << "New Username: ";
+                cin >> userName;
+                cout << "New Password: ";
+                cin >> passWord;
 
-            ofstream outFile(filename, ios::app);
-            if (!outFile) {
-                cout << "Error opening file.\n";
+                ofstream outFile(filename, ios::app);
+                if (!outFile)
+                    throw "File cannot be opened.";
 
+                outFile << userName << " " << passWord << endl;
+                outFile.close();
+
+                cout << "Registration successful.\n"; 
+
+                return true;
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
                 return false;
             }
-
-            outFile << userName << " " << passWord << endl;
-            outFile.close();
-
-            cout << "Registration successful.\n"; 
-
-            return true;
         }
 }; 
 
@@ -439,64 +504,70 @@ class Customer : public User {
 			// constructor 
 		} 
 
-		~Customer() {
+		~Customer() noexcept {
 			// destructor 
 		} 
 
 		bool login(const char* filename) { 
-            char userName[30], passWord[30]; 
-            char fileUserName[30], filePassWord[30]; 
+            try {
+                char userName[30], passWord[30]; 
+                char fileUserName[30], filePassWord[30]; 
 
-            cout << "Username: "; 
-            cin >> userName; 
-            cout << "Password: "; 
-            cin >> passWord; 
+                cout << "Username: "; 
+                cin >> userName; 
+                cout << "Password: "; 
+                cin >> passWord; 
 
-            ifstream inFile(filename); 
-            if(!inFile) {
-                cout << "Error opening file.\n"; 
+                ifstream inFile(filename); 
+                if(!inFile)
+                    throw "File cannot be opened.";
+
+                while(inFile >> fileUserName >> filePassWord) {
+                    // cout << "[DEBUG] read: " << fileUserName << " " << filePassWord << endl; 
+
+                    if(strcmp(userName, fileUserName) == 0 && strcmp(passWord, filePassWord) == 0) {
+                        inFile.close(); 
+
+                        return true; 
+                    } 
+                } 
+
+                inFile.close(); 
+                cout << "Invalid login.\n"; 
 
                 return false; 
-            } 
-
-            while(inFile >> fileUserName >> filePassWord) {
-                // cout << "[DEBUG] read: " << fileUserName << " " << filePassWord << endl; 
-
-                if(strcmp(userName, fileUserName) == 0 && strcmp(passWord, filePassWord) == 0) {
-                    inFile.close(); 
-
-                    return true; 
-                } 
-            } 
-
-            inFile.close(); 
-            cout << "Invalid login.\n"; 
-
-            return false; 
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
+                return false;
+            }
         } 
 
         bool registerUser(const char* filename) {
-            char userName[30], passWord[30];
+            try {
+                char userName[30], passWord[30];
 
-            cout << "New Username: ";
-            cin >> ws; 
-            cin >> userName;
-            cout << "New Password: ";
-            cin >> passWord;
+                cout << "New Username: ";
+                cin >> ws; 
+                cin >> userName;
+                cout << "New Password: ";
+                cin >> passWord;
 
-            ofstream outFile(filename, ios::app);
-            if (!outFile) {
-                cout << "Error opening file.\n";
+                ofstream outFile(filename, ios::app);
+                if (!outFile)
+                    throw "File cannot be opened.";
 
+                outFile << userName << " " << passWord << endl;
+                outFile.close();
+
+                cout << "Registration successful.\n"; 
+
+                return true;
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
                 return false;
             }
-
-            outFile << userName << " " << passWord << endl;
-            outFile.close();
-
-            cout << "Registration successful.\n"; 
-
-            return true;
         }
 
 		void menu() {
@@ -509,7 +580,18 @@ class Customer : public User {
                 cout << "2. Register\n";
                 cout << "0. Back\n";
                 cout << "Enter choice: ";
-                cin >> choice;
+                try {
+                    cin >> choice;
+                    if (cin.fail()) {
+                        throw "Invalid input. Please enter a number.";
+                    }
+                }
+                catch (const char* msg) {
+                    cout << msg << endl;
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    continue;
+                }
 
                 if (choice == 1) {
                     if (!login("customer.txt")) return;
@@ -529,7 +611,18 @@ class Customer : public User {
                 cout << "4. Purchase Product\n"; 
                 cout << "0. Logout\n";
                 cout << "Enter choice: ";
-                cin >> choice;
+                try {
+                    cin >> choice;
+                    if (cin.fail()) {
+                        throw "Invalid input. Please enter a number.";
+                    }
+                }
+                catch (const char* msg) {
+                    cout << msg << endl;
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    continue;
+                }
 
                 switch(choice) {
                     case 1:
@@ -544,16 +637,31 @@ class Customer : public User {
                         Staff::plist.sortByPrice(); 
                         cout << "Products sorted by price.\n"; 
                         break; 
-                    case 4: 
+                    case 4: {
                         int productID, quantity; 
 
-                        cout << "Enter Product ID: "; 
-                        cin >> productID; 
-                        cout << "Enter Quantity: "; 
-                        cin >> quantity; 
+                        try {
+                            cout << "Enter Product ID: "; 
+                            cin >> productID;
+                            if (productID <= 0)
+                                throw "Product ID must be greater than 0";
+
+                            cout << "Enter Quantity: "; 
+                            cin >> quantity;
+
+                            if (quantity <= 0)
+                                throw "Quantity must be greater than 0";
+                        }
+                        catch (const char* msg) {
+                            cout << msg << endl;
+                            cin.clear();
+                            cin.ignore(1000, '\n');
+                            break;
+                        }
 
                         Staff::plist.purchaseProduct(productID, quantity); 
                         break; 
+                    } 
                     case 0:
                         cout << "Logging out...\n";
                         break;
