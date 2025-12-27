@@ -243,6 +243,279 @@ class ProductList {
                 cout << msg << endl;
             }
         } 
+
+        // ===== PRODUCT MODULE EXTENSION =====
+
+        // Update product price by ID
+        bool updateProductPrice(int id) {
+            if(head == NULL) {
+                cout << "No products available.\n"; 
+                return false; 
+            } 
+
+            Node* cur = head; 
+            bool found = false; 
+
+            // Traverse the linked list to find the product
+            while(cur != NULL) {
+                if(cur->data.id == id) {
+                    found = true; 
+                    break; 
+                } 
+                cur = cur->next; 
+            } 
+
+            if(!found) {
+                cout << "Product with ID " << id << " not found.\n"; 
+                return false; 
+            } 
+
+            cout << "\n========== Update Product Price ==========\n"; 
+            cout << "Current Product Details:\n"; 
+            cout << "ID: " << cur->data.id << endl; 
+            cout << "Name: " << cur->data.name << endl; 
+            cout << "Current Price: RM " << cur->data.price << endl; 
+            cout << "Quantity: " << cur->data.quantity << endl; 
+
+            double newPrice; 
+            cout << "\nEnter new price (RM): "; 
+            cin >> newPrice; 
+
+            if(newPrice < 0) {
+                cout << "Invalid price. Price cannot be negative.\n"; 
+                return false; 
+            } 
+
+            double oldPrice = cur->data.price; 
+            cur->data.price = newPrice; 
+            saveToFile(); 
+
+            cout << "\n✓ Price updated successfully!\n"; 
+            cout << "Old Price: RM " << oldPrice << " → New Price: RM " << newPrice << endl; 
+
+            return true; 
+        } 
+
+        // Update product quantity by ID
+        bool updateProductQuantity(int id) {
+            if(head == NULL) {
+                cout << "No products available.\n"; 
+                return false; 
+            } 
+
+            Node* cur = head; 
+            bool found = false; 
+
+            // Traverse linked list to search for product ID
+            while(cur != NULL) {
+                if(cur->data.id == id) {
+                    found = true; 
+                    break; 
+                } 
+                cur = cur->next; 
+            } 
+
+            if(!found) {
+                cout << "Product with ID " << id << " not found.\n"; 
+                return false; 
+            } 
+
+            cout << "\n========== Update Product Quantity ==========\n"; 
+            cout << "Current Product Details:\n"; 
+            cout << "ID: " << cur->data.id << endl; 
+            cout << "Name: " << cur->data.name << endl; 
+            cout << "Price: RM " << cur->data.price << endl; 
+            cout << "Current Quantity: " << cur->data.quantity << " units\n"; 
+
+            int newQuantity; 
+            cout << "\nEnter new quantity: "; 
+            cin >> newQuantity; 
+
+            if(newQuantity < 0) {
+                cout << "Invalid quantity. Quantity cannot be negative.\n"; 
+                return false; 
+            } 
+
+            int oldQuantity = cur->data.quantity; 
+            cur->data.quantity = newQuantity; 
+            saveToFile(); 
+
+            cout << "\n✓ Quantity updated successfully!\n"; 
+            cout << "Old Quantity: " << oldQuantity << " → New Quantity: " << newQuantity << endl; 
+
+            return true; 
+        } 
+
+        // Check low stock (Quantity < 10) 
+        void checkLowStock() {
+            if(head == NULL) {
+                cout << "No products available.\n"; 
+                return; 
+            } 
+
+            cout << "\n========== Low Stock Report ==========\n"; 
+            cout << "Products with quantity below 10 units:\n\n"; 
+
+            Node* cur = head; 
+            int lowStockCount = 0; 
+            const int LOW_STOCK_THRESHOLD = 10; 
+
+            // Traverse the entire linked list to find low stock products
+            while(cur != NULL) {
+                if(cur->data.quantity < LOW_STOCK_THRESHOLD) {
+                    lowStockCount++; 
+                    cout << "ID: " << cur->data.id << " | "; 
+                    cout << "Name: " << cur->data.name << " | "; 
+                    cout << "Price: RM " << cur->data.price << " | "; 
+                    cout << "Quantity: " << cur->data.quantity << " units"; 
+
+                    if(cur->data.quantity == 0) {
+                        cout << " [OUT OF STOCK]"; 
+                    } else if(cur->data.quantity < 5) {
+                        cout << " [CRITICAL]"; 
+                    } 
+
+                    cout << endl; 
+                } 
+                cur = cur->next; 
+            } 
+
+            if(lowStockCount == 0) {
+                cout << "All products have sufficient stock (>= 10 units).\n"; 
+            } else {
+                cout << "\nTotal low stock products: " << lowStockCount << endl; 
+            } 
+        } 
+
+        // Display products by category
+        void displayByCategory() {
+            if(head == NULL) {
+                cout << "No products available.\n"; 
+                return; 
+            } 
+
+            cout << "\n========== Products by Category ==========\n"; 
+
+            cout << "\n--- Budget Products (< RM 50) ---\n"; 
+            cout << "ID\tName\t\tPrice\tQty\n"; 
+            Node* cur = head; 
+            int budgetCount = 0; 
+
+            // First traversal: budget category
+            while(cur != NULL) {
+                if(cur->data.price < 50) {
+                    budgetCount++; 
+                    cout << cur->data.id << "\t" 
+                         << cur->data.name << "\t\t" 
+                         << cur->data.price << "\t" 
+                         << cur->data.quantity << endl; 
+                } 
+                cur = cur->next; 
+            } 
+            if(budgetCount == 0) {
+                cout << "No budget products available.\n"; 
+            } 
+
+            cout << "\n--- Standard Products (RM 50 - RM 150) ---\n"; 
+            cout << "ID\tName\t\tPrice\tQty\n"; 
+            cur = head; 
+            int standardCount = 0; 
+
+            // Second traversal: standard category
+            while(cur != NULL) {
+                if(cur->data.price >= 50 && cur->data.price <= 150) {
+                    standardCount++; 
+                    cout << cur->data.id << "\t" 
+                         << cur->data.name << "\t\t" 
+                         << cur->data.price << "\t" 
+                         << cur->data.quantity << endl; 
+                } 
+                cur = cur->next; 
+            } 
+            if(standardCount == 0) {
+                cout << "No standard products available.\n"; 
+            } 
+
+            cout << "\n--- Premium Products (> RM 150) ---\n"; 
+            cout << "ID\tName\t\tPrice\tQty\n"; 
+            cur = head; 
+            int premiumCount = 0; 
+
+            // Third traversal: premium category
+            while(cur != NULL) {
+                if(cur->data.price > 150) {
+                    premiumCount++; 
+                    cout << cur->data.id << "\t" 
+                         << cur->data.name << "\t\t" 
+                         << cur->data.price << "\t" 
+                         << cur->data.quantity << endl; 
+                } 
+                cur = cur->next; 
+            } 
+            if(premiumCount == 0) {
+                cout << "No premium products available.\n"; 
+            } 
+
+            cout << "\n--- Category Summary ---\n"; 
+            cout << "Budget Products: " << budgetCount << endl; 
+            cout << "Standard Products: " << standardCount << endl; 
+            cout << "Premium Products: " << premiumCount << endl; 
+        } 
+
+        // Count total products
+        int countTotalProducts() {
+            if(head == NULL) {
+                cout << "No products in the list.\n"; 
+                return 0; 
+            } 
+
+            int totalProducts = 0; 
+            int totalQuantity = 0; 
+            double totalValue = 0; 
+
+            Node* cur = head; 
+
+            // Traverse linked list to count products and calculate statistics
+            while(cur != NULL) {
+                totalProducts++; 
+                totalQuantity += cur->data.quantity; 
+                totalValue += (cur->data.price * cur->data.quantity); 
+                cur = cur->next; 
+            } 
+
+            cout << "\n========== Product Inventory Statistics ==========\n"; 
+            cout << "Total Product Types: " << totalProducts << endl; 
+            cout << "Total Units in Stock: " << totalQuantity << endl; 
+            cout << "Total Inventory Value: RM " << totalValue << endl; 
+
+            cout << "\n--- Average Values ---\n"; 
+            if(totalProducts > 0) {
+                double avgPrice = 0; 
+                cur = head; 
+                while(cur != NULL) {
+                    avgPrice += cur->data.price; 
+                    cur = cur->next; 
+                } 
+                avgPrice /= totalProducts; 
+
+                double avgQuantity = (double)totalQuantity / totalProducts; 
+                cout << "Average Price: RM " << avgPrice << endl; 
+                cout << "Average Quantity per Product: " << avgQuantity << " units" << endl; 
+            } 
+
+            cout << "\n--- Product Type Breakdown ---\n"; 
+            cur = head; 
+            int count = 1; 
+            while(cur != NULL) {
+                cout << count << ". " << cur->data.name 
+                     << " - Qty: " << cur->data.quantity 
+                     << ", Value: RM " << (cur->data.price * cur->data.quantity) << endl; 
+                count++; 
+                cur = cur->next; 
+            } 
+
+            return totalProducts; 
+        } 
 }; 
 
 class User {
@@ -674,6 +947,311 @@ class Customer : public User {
 
 // Define the static member
 ProductList Staff::plist;
+
+// ===== CUSTOMER PURCHASE HISTORY CLASS =====
+class PurchaseHistory {
+    private:
+        struct Purchase {
+            char customerName[50];
+            int productID;
+            char productName[50];
+            int quantity;
+            double price;
+        };
+
+    public:
+        PurchaseHistory() {
+            // Constructor
+        }
+
+        ~PurchaseHistory() {
+            // Destructor
+        }
+
+        // View my purchases
+        void viewMyPurchases(char username[]) {
+            if(strlen(username) == 0) {
+                cout << "Invalid username.\n";
+                return;
+            }
+
+            try {
+                ifstream purchaseFile("purchase.txt");
+                if(!purchaseFile) {
+                    throw "Purchase file cannot be opened.";
+                }
+
+                cout << "\n========================================\n";
+                cout << "     MY PURCHASE HISTORY\n";
+                cout << "     Username: " << username << endl;
+                cout << "========================================\n\n";
+
+                string line;
+                int purchaseCount = 0;
+                double totalSpent = 0;
+                int totalItems = 0;
+
+                // Display table header
+                cout << "Date\t\tProduct ID\tProduct Name\t\tQty\tPrice\tTotal\n";
+                cout << "----\t\t----------\t------------\t\t---\t-----\t-----\n";
+
+                // Read file and filter by customer
+                while(getline(purchaseFile, line)) {
+                    if(line.empty()) continue;
+
+                    Purchase p;
+                    char temp[50];
+
+                    // Parse the line: customerName|productID|productName|quantity|price
+                    sscanf(line.c_str(), "%[^|]|%d|%[^|]|%d|%lf",
+                           p.customerName, &p.productID, p.productName,
+                           &p.quantity, &p.price);
+
+                    // Filter by customer name
+                    if(strcmp(p.customerName, username) == 0) {
+                        purchaseCount++;
+                        totalItems += p.quantity;
+                        double itemTotal = p.price * p.quantity;
+                        totalSpent += itemTotal;
+
+                        cout << purchaseCount << "\t\t" << p.productID << "\t\t"
+                             << p.productName << "\t\t"
+                             << p.quantity << "\t" << p.price << "\t"
+                             << itemTotal << endl;
+                    }
+                }
+
+                purchaseFile.close();
+
+                cout << "\n----\t\t----------\t------------\t\t---\t-----\t-----\n";
+
+                if(purchaseCount == 0) {
+                    cout << "No purchase records found for user: " << username << endl;
+                } else {
+                    cout << "Total Purchases: " << purchaseCount << endl;
+                    cout << "Total Items: " << totalItems << endl;
+                    cout << "Total Amount Spent: RM " << totalSpent << endl;
+                    double avgSpending = totalSpent / purchaseCount;
+                    cout << "Average Spending per Purchase: RM " << avgSpending << endl;
+                }
+
+                cout << "\n=========================================\n\n";
+            }
+            catch(const char* msg) {
+                cout << msg << endl;
+            }
+        }
+
+        // View all aurchases: staff only
+        void viewAllPurchases() {
+            try {
+                ifstream purchaseFile("purchase.txt");
+                if(!purchaseFile) {
+                    throw "Purchase file cannot be opened.";
+                }
+
+                cout << "\n==========================================\n";
+                cout << "   ALL CUSTOMER PURCHASE HISTORY (STAFF)\n";
+                cout << "==========================================\n\n";
+
+                string line;
+                int totalRecords = 0;
+                double totalRevenue = 0;
+                int totalQuantitySold = 0;
+
+                // Display table header
+                cout << "No.\tCustomer Name\t\tProduct ID\tProduct Name\tQty\tPrice\tTotal\n";
+                cout << "---\t--------------\t\t----------\t------------\t---\t-----\t-----\n";
+
+                // Read and display all purchase records
+                while(getline(purchaseFile, line)) {
+                    if(line.empty()) continue;
+
+                    Purchase p;
+                    sscanf(line.c_str(), "%[^|]|%d|%[^|]|%d|%lf",
+                           p.customerName, &p.productID, p.productName,
+                           &p.quantity, &p.price);
+
+                    totalRecords++;
+                    totalQuantitySold += p.quantity;
+                    double itemTotal = p.price * p.quantity;
+                    totalRevenue += itemTotal;
+
+                    cout << totalRecords << "\t" << p.customerName << "\t\t"
+                         << p.productID << "\t\t" << p.productName << "\t"
+                         << p.quantity << "\t" << p.price << "\t"
+                         << itemTotal << endl;
+                }
+
+                purchaseFile.close();
+
+                cout << "\n---\t--------------\t\t----------\t------------\t---\t-----\t-----\n";
+
+                if(totalRecords == 0) {
+                    cout << "No purchase records found.\n";
+                } else {
+                    cout << "Total Records: " << totalRecords << endl;
+                    cout << "Total Items Sold: " << totalQuantitySold << endl;
+                    cout << "Total Revenue: RM " << totalRevenue << endl;
+                    double avgTransaction = totalRevenue / totalRecords;
+                    cout << "Average Transaction Value: RM " << avgTransaction << endl;
+                }
+
+                cout << "\n==========================================\n\n";
+            }
+            catch(const char* msg) {
+                cout << msg << endl;
+            }
+        }
+
+        // Customer purchase statistics
+        void displayCustomerStatistics() {
+            try {
+                ifstream purchaseFile("purchase.txt");
+                if(!purchaseFile) {
+                    throw "Purchase file cannot be opened.";
+                }
+
+                cout << "\n==========================================\n";
+                cout << "   CUSTOMER PURCHASE STATISTICS\n";
+                cout << "==========================================\n\n";
+
+                string line;
+                char customers[100][50];
+                double customerSpending[100];
+                int customerPurchases[100];
+                int uniqueCustomers = 0;
+
+                // Initialize arrays
+                for(int i = 0; i < 100; i++) {
+                    strcpy(customers[i], "");
+                    customerSpending[i] = 0;
+                    customerPurchases[i] = 0;
+                }
+
+                // Read and process purchase records
+                while(getline(purchaseFile, line)) {
+                    if(line.empty()) continue;
+
+                    Purchase p;
+                    sscanf(line.c_str(), "%[^|]|%d|%[^|]|%d|%lf",
+                           p.customerName, &p.productID, p.productName,
+                           &p.quantity, &p.price);
+
+                    int found = -1;
+
+                    // Search for existing customer in array
+                    for(int i = 0; i < uniqueCustomers; i++) {
+                        if(strcmp(customers[i], p.customerName) == 0) {
+                            found = i;
+                            break;
+                        }
+                    }
+
+                    if(found == -1) {
+                        // New customer
+                        strcpy(customers[uniqueCustomers], p.customerName);
+                        customerSpending[uniqueCustomers] = p.price * p.quantity;
+                        customerPurchases[uniqueCustomers] = 1;
+                        uniqueCustomers++;
+                    } else {
+                        // Existing customer
+                        customerSpending[found] += p.price * p.quantity;
+                        customerPurchases[found]++;
+                    }
+                }
+
+                purchaseFile.close();
+
+                // Display statistics
+                cout << "Customer Name\t\tPurchases\tTotal Spent\tAvg Per Purchase\n";
+                cout << "--------------\t\t---------\t-----------\t-----------------\n";
+
+                double totalRevenue = 0;
+                for(int i = 0; i < uniqueCustomers; i++) {
+                    double avgPerPurchase = customerSpending[i] / customerPurchases[i];
+                    totalRevenue += customerSpending[i];
+
+                    cout << customers[i] << "\t\t" << customerPurchases[i] << "\t\t"
+                         << customerSpending[i] << "\t\t" << avgPerPurchase << endl;
+                }
+
+                cout << "\n--------------\t\t---------\t-----------\t-----------------\n";
+                cout << "Total Unique Customers: " << uniqueCustomers << endl;
+                cout << "Total Revenue: RM " << totalRevenue << endl;
+
+                if(uniqueCustomers > 0) {
+                    double avgCustomerValue = totalRevenue / uniqueCustomers;
+                    cout << "Average Customer Value: RM " << avgCustomerValue << endl;
+                }
+
+                cout << "\n==========================================\n\n";
+            }
+            catch(const char* msg) {
+                cout << msg << endl;
+            }
+        }
+
+        // Search purchase by product
+        void searchPurchaseByProduct(int productID) {
+            try {
+                ifstream purchaseFile("purchase.txt");
+                if(!purchaseFile) {
+                    throw "Purchase file cannot be opened.";
+                }
+
+                cout << "\n==========================================\n";
+                cout << "   PURCHASE SEARCH BY PRODUCT ID\n";
+                cout << "   Product ID: " << productID << endl;
+                cout << "==========================================\n\n";
+
+                string line;
+                int recordCount = 0;
+                int totalQuantity = 0;
+                double totalRevenue = 0;
+
+                cout << "Customer Name\t\tQty\tPrice\tTotal\n";
+                cout << "--------------\t\t---\t-----\t-----\n";
+
+                // Filter purchases by product ID
+                while(getline(purchaseFile, line)) {
+                    if(line.empty()) continue;
+
+                    Purchase p;
+                    sscanf(line.c_str(), "%[^|]|%d|%[^|]|%d|%lf",
+                           p.customerName, &p.productID, p.productName,
+                           &p.quantity, &p.price);
+
+                    if(p.productID == productID) {
+                        recordCount++;
+                        totalQuantity += p.quantity;
+                        double itemTotal = p.price * p.quantity;
+                        totalRevenue += itemTotal;
+
+                        cout << p.customerName << "\t\t" << p.quantity << "\t"
+                             << p.price << "\t" << itemTotal << endl;
+                    }
+                }
+
+                purchaseFile.close();
+
+                cout << "\n--------------\t\t---\t-----\t-----\n";
+
+                if(recordCount == 0) {
+                    cout << "No purchases found for Product ID: " << productID << endl;
+                } else {
+                    cout << "Total Records: " << recordCount << endl;
+                    cout << "Total Quantity Sold: " << totalQuantity << endl;
+                    cout << "Total Revenue: RM " << totalRevenue << endl;
+                }
+
+                cout << "\n==========================================\n\n";
+            }
+            catch(const char* msg) {
+                cout << msg << endl;
+            }
+        }
+};
 
 int main() { 
     Staff::plist.loadFromFile(); 
