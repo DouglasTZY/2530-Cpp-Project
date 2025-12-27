@@ -89,6 +89,153 @@ void writeLogPurchase(const char* customerName, const char* productName, int qty
     log.close();
 } 
 
+// ===== UTILS / HELPER CLASS =====
+class Utils {
+public:
+    // Pause execution and wait for user input
+    static void pause() {
+        cout << "\nPress Enter to continue...";
+        cin.ignore(1000, '\n');
+        cin.get();
+    }
+    
+    // Clear the console screen
+    static void clearScreen() {
+        #ifdef _WIN32
+            system("cls");
+        #else
+            system("clear");
+        #endif
+    }
+    
+    // Confirm action from user (Y/N)
+    static bool confirmAction() {
+        char response;
+        cout << "\nAre you sure? (Y/N): ";
+        cin >> response;
+        cin.ignore();
+        
+        return (response == 'Y' || response == 'y');
+    }
+    
+    // Alternative confirmation with custom message
+    static bool confirmAction(const char* message) {
+        char response;
+        cout << "\n" << message << " (Y/N): ";
+        cin >> response;
+        cin.ignore();
+        
+        return (response == 'Y' || response == 'y');
+    }
+    
+    // Print a line separator for better formatting
+    static void printLine() {
+        cout << "=====================================\n";
+    }
+    
+    // Print a line separator with custom length
+    static void printLine(int length) {
+        for(int i = 0; i < length; i++) {
+            cout << "=";
+        }
+        cout << "\n";
+    }
+    
+    // Print a titled section header
+    static void printHeader(const char* title) {
+        Utils::clearScreen();
+        Utils::printLine();
+        cout << "     " << title << endl;
+        Utils::printLine();
+    }
+    
+    // Display a status message with emphasis
+    static void printStatus(const char* message, bool isSuccess = true) {
+        if(isSuccess) {
+            cout << "\n[✓ SUCCESS] " << message << endl;
+        } else {
+            cout << "\n[✗ ERROR] " << message << endl;
+        }
+    }
+    
+    // Display a warning message
+    static void printWarning(const char* message) {
+        cout << "\n[⚠ WARNING] " << message << endl;
+    }
+    
+    // Display menu section divider
+    static void printDivider() {
+        cout << "-------------------------------------\n";
+    }
+    
+    // Wait for user confirmation before proceeding
+    static bool confirmProceeding() {
+        return Utils::confirmAction("Do you want to proceed?");
+    }
+    
+    // Input validation helper - get positive integer
+    static int getPositiveInteger(const char* prompt) {
+        int value;
+        bool valid = false;
+        
+        while(!valid) {
+            try {
+                cout << prompt;
+                cin >> value;
+                
+                if(cin.fail()) {
+                    throw "Invalid input. Please enter a number.";
+                }
+                
+                if(value <= 0) {
+                    throw "Please enter a positive number.";
+                }
+                
+                valid = true;
+                cin.ignore();
+            }
+            catch(const char* msg) {
+                cout << "[✗ ERROR] " << msg << endl;
+                cin.clear();
+                cin.ignore(1000, '\n');
+            }
+        }
+        
+        return value;
+    }
+    
+    // Input validation helper - get positive double
+    static double getPositiveDouble(const char* prompt) {
+        double value;
+        bool valid = false;
+        
+        while(!valid) {
+            try {
+                cout << prompt;
+                cin >> value;
+                
+                if(cin.fail()) {
+                    throw "Invalid input. Please enter a number.";
+                }
+                
+                if(value <= 0) {
+                    throw "Please enter a positive number.";
+                }
+                
+                valid = true;
+                cin.ignore();
+            }
+            catch(const char* msg) {
+                cout << "[✗ ERROR] " << msg << endl;
+                cin.clear();
+                cin.ignore(1000, '\n');
+            }
+        }
+        
+        return value;
+    }
+};
+
 struct Product {
 	int id; 
 	char name[50]; 
@@ -873,10 +1020,12 @@ class Staff : public User {
             Product p; 
 
             do {
-                cout << "\n--- Staff ---\n";
+                Utils::clearScreen();
+                Utils::printHeader("STAFF LOGIN");
                 cout << "1. Login\n";
                 cout << "2. Register\n";
                 cout << "0. Back\n";
+                Utils::printDivider();
                 cout << "Enter choice: ";
                 try {
                     cin >> choice;
@@ -885,9 +1034,10 @@ class Staff : public User {
                     }
                 }
                 catch (const char* msg) {
-                    cout << msg << endl;
+                    Utils::printWarning(msg);
                     cin.clear();
                     cin.ignore(1000, '\n');
+                    Utils::pause();
                     continue;
                 }
 
@@ -896,13 +1046,18 @@ class Staff : public User {
                     break;
                 } else if (choice == 2) {
                     registerUser("staff.txt");
+                    Utils::pause();
                 } else if (choice == 0) {
                     return;
+                } else {
+                    Utils::printWarning("Invalid choice!");
+                    Utils::pause();
                 }
             } while (true);
 
 			do {
-                cout << "\n--- Staff Menu ---\n";
+                Utils::clearScreen();
+                Utils::printHeader("STAFF MENU");
                 cout << "1. Add Product\n";
                 cout << "2. Display Products\n"; 
                 cout << "3. Sort Products by Price\n"; 
@@ -914,6 +1069,7 @@ class Staff : public User {
                 cout << "9. Get Average Sales Per Transaction\n";
                 cout << "10. Generate Daily Summary\n";
                 cout << "0. Logout\n";
+                Utils::printDivider();
                 cout << "Enter choice: ";
                 try {
                     cin >> choice;
@@ -922,108 +1078,120 @@ class Staff : public User {
                     }
                 }
                 catch (const char* msg) {
-                    cout << msg << endl;
+                    Utils::printWarning(msg);
                     cin.clear();
                     cin.ignore(1000, '\n');
+                    Utils::pause();
                     continue;
                 }
 
                 switch(choice) {
                     case 1: {
                         try {
-                            cout << "Enter Product ID: ";
-                            cin >> p.id;
-                            if (p.id <= 0) throw "Invalid Product ID";
+                            p.id = Utils::getPositiveInteger("Enter Product ID: ");
                             cin.ignore();
 
                             cout << "Enter Product Name: ";
                             cin.getline(p.name, 50);
 
-                            cout << "Enter Price: ";
-                            cin >> p.price;
-                            if (p.price <= 0) throw "Invalid Price";
+                            p.price = Utils::getPositiveDouble("Enter Price (RM): ");
 
-                            cout << "Enter Quantity: ";
-                            cin >> p.quantity;
-                            if (p.quantity < 0) throw "Invalid Quantity";
+                            p.quantity = Utils::getPositiveInteger("Enter Quantity: ");
                         }
                         catch (const char* msg) {
-                            cout << msg << endl;
+                            Utils::printWarning(msg);
                             cin.clear();
                             cin.ignore(1000, '\n');
+                            Utils::pause();
                             break;
                         }
 
-                        plist.addProduct(p);
-                        plist.saveToFile();  
-
-                        cout << "Product added successfully!\n";
-                        
-                        // ===== AUDIT LOG: Add Product =====
-                        writeLogWithProduct("ADD PRODUCT", p.name, p.price, p.quantity, username);
+                        if(Utils::confirmAction("Add this product?")) {
+                            plist.addProduct(p);
+                            plist.saveToFile();  
+                            Utils::printStatus("Product added successfully!", true);
+                            writeLogWithProduct("ADD PRODUCT", p.name, p.price, p.quantity, username);
+                        } else {
+                            Utils::printStatus("Product addition cancelled.", false);
+                        }
+                        Utils::pause();
                         break;
                     }
 
                     case 2:
+                        Utils::printHeader("PRODUCT LIST");
                         cout << "Display Products (coming soon)\n";
-                        // ===== AUDIT LOG: Display Products =====
                         writeLog("DISPLAY PRODUCTS", username);
+                        Utils::pause();
                         break; 
-                    case 3: 
-                        plist.sortByPrice(); 
-                        cout << "Products sorted by price.\n"; 
-                        // ===== AUDIT LOG: Sort Products =====
+                    case 3: {
+                        plist.sortByPrice();
+                        Utils::printStatus("Products sorted by price.", true);
                         writeLog("SORT PRODUCTS BY PRICE", username);
-                        break;     
+                        Utils::pause();
+                        break;
+                    }
                     case 4: {
-                        int searchID;
-                        cout << "Enter Product ID to search: ";
-                        cin >> searchID;
+                        int searchID = Utils::getPositiveInteger("Enter Product ID to search: ");
                         plist.searchByID(searchID);
-                        // ===== AUDIT LOG: Search Product =====
                         writeLogWithID("SEARCH PRODUCT", searchID, username);
+                        Utils::pause();
                         break;
                     }
                     case 5: {
-                        int deleteID;
-                        cout << "Enter Product ID to delete: ";
-                        cin >> deleteID;
-                        plist.deleteProduct(deleteID);
-                        
-                        // ===== AUDIT LOG: Delete Product =====
-                        writeLogWithID("DELETE PRODUCT", deleteID, username);
+                        int deleteID = Utils::getPositiveInteger("Enter Product ID to delete: ");
+                        if(Utils::confirmAction("Delete this product?")) {
+                            plist.deleteProduct(deleteID);
+                            Utils::printStatus("Product deleted successfully!", true);
+                            writeLogWithID("DELETE PRODUCT", deleteID, username);
+                        } else {
+                            Utils::printStatus("Deletion cancelled.", false);
+                        }
+                        Utils::pause();
                         break;
                     } 
                     case 6: {
+                        Utils::printHeader("SALES SUMMARY");
                         SalesSummary ss; 
-                        ss.generateReport(username); 
+                        ss.generateReport(username);
+                        writeLog("GENERATE SALES SUMMARY", username);
+                        Utils::pause();
                         break;
                     }
                     case 7: {
+                        Utils::printHeader("HIGHEST SALES PRODUCT");
                         SalesSummary ss;
                         ss.getHighestSalesProduct(username);
+                        Utils::pause();
                         break;
                     }
                     case 8: {
+                        Utils::printHeader("LOWEST SALES PRODUCT");
                         SalesSummary ss;
                         ss.getLowestSalesProduct(username);
+                        Utils::pause();
                         break;
                     }
                     case 9: {
+                        Utils::printHeader("AVERAGE SALES PER TRANSACTION");
                         SalesSummary ss;
                         ss.getAverageSalesPerTransaction(username);
+                        Utils::pause();
                         break;
                     }
                     case 10: {
+                        Utils::printHeader("DAILY SUMMARY");
                         SalesSummary ss;
                         ss.generateDailySummary(username);
+                        Utils::pause();
                         break;
                     }
                     case 0:
-                        cout << "Logging out...\n";
+                        Utils::printStatus("Logging out...", true);
                         break;
                     default:
-                        cout << "Invalid choice!\n";
+                        Utils::printWarning("Invalid choice!");
+                        Utils::pause();
                 }
             } while(choice != 0);
         } 
@@ -1188,10 +1356,12 @@ class Customer : public User {
             int studentID; 
 
             do {
-                cout << "\n--- Customer ---\n";
+                Utils::clearScreen();
+                Utils::printHeader("CUSTOMER LOGIN");
                 cout << "1. Login\n";
                 cout << "2. Register\n";
                 cout << "0. Back\n";
+                Utils::printDivider();
                 cout << "Enter choice: ";
                 try {
                     cin >> choice;
@@ -1200,29 +1370,39 @@ class Customer : public User {
                     }
                 }
                 catch (const char* msg) {
-                    cout << msg << endl;
+                    Utils::printWarning(msg);
                     cin.clear();
                     cin.ignore(1000, '\n');
+                    Utils::pause();
                     continue;
                 }
 
                 if (choice == 1) {
-                    if (!login("customer.txt")) return;
+                    if (!login("customer.txt")) {
+                        Utils::pause();
+                        return;
+                    }
                     break;
                 } else if (choice == 2) {
                     registerUser("customer.txt");
+                    Utils::pause();
                 } else if (choice == 0) {
                     return;
+                } else {
+                    Utils::printWarning("Invalid choice!");
+                    Utils::pause();
                 }
             } while (true);
 
             do {
-                cout << "\n--- Customer Menu ---\n";
+                Utils::clearScreen();
+                Utils::printHeader("CUSTOMER MENU");
                 cout << "1. View Products\n";
                 cout << "2. Search Product by ID\n";
                 cout << "3. Sort Products by Price\n"; 
                 cout << "4. Purchase Product\n"; 
                 cout << "0. Logout\n";
+                Utils::printDivider();
                 cout << "Enter choice: ";
                 try {
                     cin >> choice;
@@ -1231,64 +1411,67 @@ class Customer : public User {
                     }
                 }
                 catch (const char* msg) {
-                    cout << msg << endl;
+                    Utils::printWarning(msg);
                     cin.clear();
                     cin.ignore(1000, '\n');
+                    Utils::pause();
                     continue;
                 }
 
                 switch(choice) {
                     case 1:
+                        Utils::printHeader("PRODUCT LIST");
                         Staff::plist.displayProducts(); 
-                        // ===== AUDIT LOG: View Products =====
                         writeLog("VIEW PRODUCTS", username);
+                        Utils::pause();
                         break;
                     case 2: {
-                        cout << "Enter Product ID to search: "; 
-                        cin >> studentID; 
+                        studentID = Utils::getPositiveInteger("Enter Product ID to search: ");
                         Staff::plist.searchByID(studentID); 
-                        // ===== AUDIT LOG: Customer Search Product =====
                         writeLogWithID("SEARCH PRODUCT", studentID, username);
+                        Utils::pause();
                         break;
                     }
-                    case 3: 
-                        Staff::plist.sortByPrice(); 
-                        cout << "Products sorted by price.\n"; 
-                        // ===== AUDIT LOG: Customer Sort Products =====
+                    case 3: {
+                        Staff::plist.sortByPrice();
+                        Utils::printStatus("Products sorted by price.", true);
                         writeLog("SORT PRODUCTS BY PRICE", username);
-                        break; 
+                        Utils::pause();
+                        break;
+                    }
                     case 4: {
                         int productID, quantity; 
 
                         try {
-                            cout << "Enter Product ID: "; 
-                            cin >> productID;
-                            if (productID <= 0)
-                                throw "Product ID must be greater than 0";
-
-                            cout << "Enter Quantity: "; 
-                            cin >> quantity;
-
-                            if (quantity <= 0)
-                                throw "Quantity must be greater than 0";
+                            productID = Utils::getPositiveInteger("Enter Product ID: ");
+                            quantity = Utils::getPositiveInteger("Enter Quantity: ");
                         }
                         catch (const char* msg) {
-                            cout << msg << endl;
+                            Utils::printWarning(msg);
                             cin.clear();
                             cin.ignore(1000, '\n');
+                            Utils::pause();
                             break;
                         }
 
-                        Staff::plist.purchaseProduct(productID, quantity, username); 
-                        break; 
-                    } 
+                        if(Utils::confirmAction("Confirm purchase?")) {
+                            Staff::plist.purchaseProduct(productID, quantity, username);
+                            Utils::printStatus("Purchase completed successfully!", true);
+                            writeLogWithID("PURCHASE PRODUCT", productID, username);
+                        } else {
+                            Utils::printStatus("Purchase cancelled.", false);
+                        }
+                        Utils::pause();
+                        break;
+                    }
                     case 0:
-                        cout << "Logging out...\n";
+                        Utils::printStatus("Logging out...", true);
                         break;
                     default:
-                        cout << "Invalid choice!\n";
-                } 
-            } while(choice != 0); 
+                        Utils::printWarning("Invalid choice!");
+                        Utils::pause();
+                }
+            } while(choice != 0);
         }
 }; 
 
@@ -1607,29 +1790,39 @@ int main() {
 	User* user = NULL; 
 
 	do {
-		cout << "\n===== Stationery Shop Management System =====\n"; 
+		Utils::clearScreen();
+		Utils::printLine(45);
+		cout << "  STATIONERY SHOP MANAGEMENT SYSTEM  \n"; 
+		Utils::printLine(45);
+		Utils::printDivider();
 		cout << "1. Staff Module\n"; 
 		cout << "2. Customer Module\n"; 
-		cout << "0. Exit\n"; 
+		cout << "0. Exit\n";
+		Utils::printDivider();
 		cout << "Enter choice: "; 
 		cin >> choice; 
 
 		switch(choice) {
-			case 1:
+			case 1: {
                 user = new Staff(); 
 				user->menu(); 
-				delete user; 
+				delete user;
+				user = NULL;
                 break;
-            case 2:
+			}
+            case 2: {
                 user = new Customer(); 
 				user->menu(); 
 				delete user;
+				user = NULL;
                 break;
+			}
             case 0:
-                cout << "Exiting system...\n";
+                Utils::printStatus("Exiting system...", true);
                 break;
             default:
-                cout << "Invalid choice!\n";
+                Utils::printWarning("Invalid choice!");
+                Utils::pause();
 		} 
 	} while(choice != 0); 
 
