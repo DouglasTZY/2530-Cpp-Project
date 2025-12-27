@@ -688,7 +688,178 @@ class SalesSummary {
             catch (const char* msg) {
                 cout << msg << endl;
             }
-        } 
+        }
+        
+        // Function 1: Get Highest Sales Product
+        void getHighestSalesProduct(const char* staffName = "unknown") {
+            try {
+                ifstream inFile("purchase.txt");
+                if(!inFile)
+                    throw "Cannot open purchase.txt.";
+                
+                char customerName[30], productName[30];
+                char highestProduct[30] = "None";
+                int productID, quantity;
+                float price;
+                float highestSales = 0;
+                
+                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
+                    float currentSales = quantity * price;
+                    if(currentSales > highestSales) {
+                        highestSales = currentSales;
+                        strcpy(highestProduct, productName);
+                    }
+                }
+                
+                inFile.close();
+                
+                cout << "\n===== HIGHEST SALES PRODUCT =====\n";
+                cout << "Product: " << highestProduct << endl;
+                cout << "Total Sales: RM " << highestSales << endl;
+                
+                writeLog("RETRIEVE HIGHEST SALES PRODUCT", staffName);
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
+            }
+        }
+        
+        // Function 2: Get Lowest Sales Product
+        void getLowestSalesProduct(const char* staffName = "unknown") {
+            try {
+                ifstream inFile("purchase.txt");
+                if(!inFile)
+                    throw "Cannot open purchase.txt.";
+                
+                char customerName[30], productName[30];
+                char lowestProduct[30] = "None";
+                int productID, quantity;
+                float price;
+                float lowestSales = 999999999;
+                bool firstRecord = true;
+                
+                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
+                    float currentSales = quantity * price;
+                    if(firstRecord || currentSales < lowestSales) {
+                        lowestSales = currentSales;
+                        strcpy(lowestProduct, productName);
+                        firstRecord = false;
+                    }
+                }
+                
+                inFile.close();
+                
+                cout << "\n===== LOWEST SALES PRODUCT =====\n";
+                cout << "Product: " << lowestProduct << endl;
+                cout << "Total Sales: RM " << lowestSales << endl;
+                
+                writeLog("RETRIEVE LOWEST SALES PRODUCT", staffName);
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
+            }
+        }
+        
+        // Function 3: Get Average Sales Per Transaction
+        void getAverageSalesPerTransaction(const char* staffName = "unknown") {
+            try {
+                ifstream inFile("purchase.txt");
+                if(!inFile)
+                    throw "Cannot open purchase.txt.";
+                
+                char customerName[30], productName[30];
+                int productID, quantity;
+                float price;
+                float totalSales = 0;
+                int transactionCount = 0;
+                
+                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
+                    totalSales += quantity * price;
+                    transactionCount++;
+                }
+                
+                inFile.close();
+                
+                float averageSales = (transactionCount > 0) ? (totalSales / transactionCount) : 0;
+                
+                cout << "\n===== AVERAGE SALES PER TRANSACTION =====\n";
+                cout << "Total Transactions: " << transactionCount << endl;
+                cout << "Total Sales Amount: RM " << totalSales << endl;
+                cout << "Average Per Transaction: RM " << averageSales << endl;
+                
+                writeLog("RETRIEVE AVERAGE SALES PER TRANSACTION", staffName);
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
+            }
+        }
+        
+        // Function 4: Generate Daily Summary (with simulated dates)
+        void generateDailySummary(const char* staffName = "unknown") {
+            try {
+                ifstream inFile("purchase.txt");
+                ofstream outFile("daily_summary.txt");
+                
+                if(!inFile)
+                    throw "Cannot open purchase.txt.";
+                if(!outFile)
+                    throw "Cannot open daily_summary.txt.";
+                
+                char customerName[30], productName[30];
+                int productID, quantity;
+                float price;
+                int dayCounter = 1;
+                int transactionCounter = 0;
+                float dailySalesAmount = 0;
+                
+                outFile << "===== DAILY SALES SUMMARY REPORT =====\n";
+                outFile << "Generated on: 2025-12-28\n\n";
+                
+                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
+                    transactionCounter++;
+                    float transactionAmount = quantity * price;
+                    dailySalesAmount += transactionAmount;
+                    
+                    // Every 3 transactions = 1 day (simulated)
+                    if(transactionCounter % 3 == 0) {
+                        char fakeDate[20];
+                        sprintf(fakeDate, "2025-12-%02d", (dayCounter % 28) + 1);
+                        
+                        outFile << "--- " << fakeDate << " ---\n";
+                        outFile << "Transactions: " << (transactionCounter % 3 == 0 ? 3 : transactionCounter % 3) << endl;
+                        outFile << "Daily Sales: RM " << dailySalesAmount << endl;
+                        outFile << "Product: " << productName << " (Qty: " << quantity << ")\n";
+                        outFile << "\n";
+                        
+                        dailySalesAmount = 0;
+                        dayCounter++;
+                    }
+                }
+                
+                // Handle remaining transactions
+                if(transactionCounter % 3 != 0) {
+                    char fakeDate[20];
+                    sprintf(fakeDate, "2025-12-%02d", (dayCounter % 28) + 1);
+                    
+                    outFile << "--- " << fakeDate << " ---\n";
+                    outFile << "Transactions: " << (transactionCounter % 3) << endl;
+                    outFile << "Daily Sales: RM " << dailySalesAmount << endl;
+                    outFile << "\n";
+                }
+                
+                inFile.close();
+                outFile.close();
+                
+                cout << "\n===== DAILY SUMMARY GENERATED =====\n";
+                cout << "Daily summary report saved to daily_summary.txt\n";
+                cout << "Total Days Simulated: " << dayCounter << endl;
+                
+                writeLog("GENERATE DAILY SALES SUMMARY", staffName);
+            }
+            catch (const char* msg) {
+                cout << msg << endl;
+            }
+        }
 }; 
 
 class Staff : public User { 
@@ -737,7 +908,11 @@ class Staff : public User {
                 cout << "3. Sort Products by Price\n"; 
                 cout << "4. Search Product by ID\n"; 
                 cout << "5. Delete Product\n"; 
-                cout << "6. Generate Sales Summary\n"; 
+                cout << "6. Generate Sales Summary\n";
+                cout << "7. Get Highest Sales Product\n";
+                cout << "8. Get Lowest Sales Product\n";
+                cout << "9. Get Average Sales Per Transaction\n";
+                cout << "10. Generate Daily Summary\n";
                 cout << "0. Logout\n";
                 cout << "Enter choice: ";
                 try {
@@ -823,7 +998,27 @@ class Staff : public User {
                         SalesSummary ss; 
                         ss.generateReport(username); 
                         break;
-                    }     
+                    }
+                    case 7: {
+                        SalesSummary ss;
+                        ss.getHighestSalesProduct(username);
+                        break;
+                    }
+                    case 8: {
+                        SalesSummary ss;
+                        ss.getLowestSalesProduct(username);
+                        break;
+                    }
+                    case 9: {
+                        SalesSummary ss;
+                        ss.getAverageSalesPerTransaction(username);
+                        break;
+                    }
+                    case 10: {
+                        SalesSummary ss;
+                        ss.generateDailySummary(username);
+                        break;
+                    }
                     case 0:
                         cout << "Logging out...\n";
                         break;
