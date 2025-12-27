@@ -1,0 +1,16 @@
+# Audit Log File - Stationery Shop Management System
+# Format: [YYYY-MM-DD HH:MM:SS] [Username] Action Details
+
+# Sample entries will be generated when operations are performed
+# Examples of logged operations:
+# - STAFF LOGIN / CUSTOMER LOGIN
+# - STAFF LOGIN FAILED / CUSTOMER LOGIN FAILED
+# - STAFF REGISTERED / CUSTOMER REGISTERED
+# - ADD PRODUCT
+# - DELETE PRODUCT
+# - SEARCH PRODUCT
+# - DISPLAY PRODUCTS
+# - SORT PRODUCTS BY PRICE
+# - PURCHASE
+# - GENERATE SALES SUMMARY
+
