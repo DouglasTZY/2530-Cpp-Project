@@ -3,7 +3,13 @@
 #include <cstring> 
 #include <ctime>
 #include <sstream>
-using namespace std; 
+#include <clocale>
+using namespace std;
+
+// UTF-8 Support for Windows
+#ifdef _WIN32
+#include <windows.h>
+#endif 
 
 // ===== AUDIT LOG SYSTEM =====
 void writeLog(const char* action, const char* username = "unknown") {
@@ -152,7 +158,7 @@ public:
     // Display a status message with emphasis
     static void printStatus(const char* message, bool isSuccess = true) {
         if(isSuccess) {
-            cout << "\n[✓ SUCCESS] " << message << endl;
+            cout << "\n[OK] " << message << endl;
         } else {
             cout << "\n[✗ ERROR] " << message << endl;
         }
@@ -160,7 +166,7 @@ public:
     
     // Display a warning message
     static void printWarning(const char* message) {
-        cout << "\n[⚠ WARNING] " << message << endl;
+        cout << "\n[!] " << message << endl;
     }
     
     // Display menu section divider
@@ -344,7 +350,49 @@ class ProductList {
             cout << "Product not found.\n"; 
 
             return false; 
-        } 
+        }
+        
+        // Helper: Check if product ID exists (returns boolean)
+        bool searchByIDExists(int targetID) {
+            Node* cur = head;
+            
+            while(cur != NULL) {
+                if(cur->data.id == targetID) {
+                    return true;
+                }
+                cur = cur->next;
+            }
+            
+            return false;
+        }
+        
+        // Helper: Get product quantity by ID
+        int getProductQuantity(int targetID) {
+            Node* cur = head;
+            
+            while(cur != NULL) {
+                if(cur->data.id == targetID) {
+                    return cur->data.quantity;
+                }
+                cur = cur->next;
+            }
+            
+            return -1;  // Product not found
+        }
+        
+        // Helper: Get product price by ID
+        double getProductPrice(int targetID) {
+            Node* cur = head;
+            
+            while(cur != NULL) {
+                if(cur->data.id == targetID) {
+                    return cur->data.price;
+                }
+                cur = cur->next;
+            }
+            
+            return -1.0;  // Product not found
+        }
 
         bool purchaseProduct(int productID, int quantity, const char* customerName = "unknown") {
             Node* cur = head; 
@@ -544,7 +592,7 @@ class ProductList {
             cur->data.price = newPrice; 
             saveToFile(); 
 
-            cout << "\n✓ Price updated successfully!\n"; 
+            cout << "\n[OK] Price updated successfully!\n"; 
             cout << "Old Price: RM " << oldPrice << " → New Price: RM " << newPrice << endl; 
 
             return true; 
@@ -594,7 +642,7 @@ class ProductList {
             cur->data.quantity = newQuantity; 
             saveToFile(); 
 
-            cout << "\n✓ Quantity updated successfully!\n"; 
+            cout << "\n[OK] Quantity updated successfully!\n"; 
             cout << "Old Quantity: " << oldQuantity << " → New Quantity: " << newQuantity << endl; 
 
             return true; 
@@ -769,8 +817,199 @@ class ProductList {
             } 
 
             return totalProducts; 
-        } 
+        }
 }; 
+
+// ===== VALIDATION & EXCEPTION HANDLING =====
+
+class ValidationHelper {
+public:
+    // Validation 1: Check if username already exists
+    static bool isUsernameExists(const char* filename, const char* username) {
+        try {
+            ifstream inFile(filename);
+            
+            // Check if file is empty
+            inFile.seekg(0, ios::end);
+            if(inFile.tellg() == 0) {
+                inFile.close();
+                return false;  // File empty, username doesn't exist
+            }
+            inFile.seekg(0, ios::beg);
+            
+            char fileUsername[30], filePassword[30];
+            
+            while(inFile >> fileUsername >> filePassword) {
+                if(strcmp(fileUsername, username) == 0) {
+                    inFile.close();
+                    Utils::printWarning("Username already exists! Please choose another.");
+                    writeLog("REGISTRATION FAILED - DUPLICATE USERNAME", username);
+                    return true;  // Username exists
+                }
+            }
+            
+            inFile.close();
+            return false;  // Username doesn't exist
+        }
+        catch(const char* msg) {
+            Utils::printWarning(msg);
+            return false;
+        }
+    }
+    
+    // Validation 2: Check if product ID exists in the product list
+    static bool isProductIDExists(ProductList& plist, int productID) {
+        // This method assumes ProductList has a searchByID method
+        // We'll search through the list
+        return plist.searchByIDExists(productID);
+    }
+    
+    // Validation 3: Check if purchase quantity is reasonable
+    static bool isPurchaseQuantityValid(ProductList& plist, int productID, int quantity) {
+        try {
+            if(quantity <= 0) {
+                Utils::printWarning("Quantity must be greater than 0!");
+                writeLog("PURCHASE FAILED - INVALID QUANTITY", "system");
+                return false;
+            }
+            
+            if(quantity > 9999) {
+                Utils::printWarning("Quantity is unreasonably high (max 9999 units)!");
+                writeLog("PURCHASE FAILED - EXCESSIVE QUANTITY", "system");
+                return false;
+            }
+            
+            // Get available stock
+            int availableStock = plist.getProductQuantity(productID);
+            
+            if(availableStock == -1) {
+                Utils::printWarning("Product not found!");
+                return false;
+            }
+            
+            if(availableStock < quantity) {
+                cout << "\n[!] Insufficient stock!\n";
+                cout << "Available: " << availableStock << " units\n";
+                cout << "Requested: " << quantity << " units\n";
+                writeLogWithID("PURCHASE FAILED - INSUFFICIENT STOCK", productID, "system");
+                return false;
+            }
+            
+            return true;
+        }
+        catch(const char* msg) {
+            Utils::printWarning(msg);
+            return false;
+        }
+    }
+    
+    // Validation 4: Check if file is empty
+    static bool isFileEmpty(const char* filename) {
+        try {
+            ifstream inFile(filename);
+            
+            if(!inFile) {
+                // File doesn't exist, consider it empty
+                inFile.close();
+                return true;
+            }
+            
+            // Check file size
+            inFile.seekg(0, ios::end);
+            bool isEmpty = (inFile.tellg() == 0);
+            inFile.seekg(0, ios::beg);
+            
+            inFile.close();
+            return isEmpty;
+        }
+        catch(const char* msg) {
+            cout << "[✗ ERROR] " << msg << endl;
+            return true;  // Assume empty if error
+        }
+    }
+    
+    // Additional: Check product count in file
+    static int getProductCountInFile(const char* filename) {
+        try {
+            ifstream inFile(filename);
+            
+            if(!inFile || ValidationHelper::isFileEmpty(filename)) {
+                return 0;
+            }
+            
+            int count = 0;
+            char line[500];
+            
+            while(inFile.getline(line, sizeof(line))) {
+                if(strlen(line) > 0) {
+                    count++;
+                }
+            }
+            
+            inFile.close();
+            return count;
+        }
+        catch(const char* msg) {
+            cout << "[✗ ERROR] " << msg << endl;
+            return 0;
+        }
+    }
+    
+    // Additional: Validate product price
+    static bool isProductPriceValid(double price) {
+        if(price <= 0) {
+            Utils::printWarning("Price must be greater than 0!");
+            return false;
+        }
+        
+        if(price > 10000) {
+            Utils::printWarning("Price is unreasonably high (max RM 10000)!");
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Additional: Validate product quantity in inventory
+    static bool isProductInventoryValid(int quantity) {
+        if(quantity < 0) {
+            Utils::printWarning("Quantity cannot be negative!");
+            return false;
+        }
+        
+        if(quantity > 99999) {
+            Utils::printWarning("Quantity is unreasonably high (max 99999 units)!");
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Additional: Check if customer file has any records
+    static int getCustomerCountInFile(const char* filename) {
+        try {
+            ifstream inFile(filename);
+            
+            if(!inFile || ValidationHelper::isFileEmpty(filename)) {
+                return 0;
+            }
+            
+            int count = 0;
+            char username[30], password[30];
+            
+            while(inFile >> username >> password) {
+                count++;
+            }
+            
+            inFile.close();
+            return count;
+        }
+        catch(const char* msg) {
+            cout << "[✗ ERROR] " << msg << endl;
+            return 0;
+        }
+    }
+};
 
 class User {
 	protected: 
@@ -1095,8 +1334,20 @@ class Staff : public User {
                             cin.getline(p.name, 50);
 
                             p.price = Utils::getPositiveDouble("Enter Price (RM): ");
+                            
+                            // ===== VALIDATION: Product price validation =====
+                            if(!ValidationHelper::isProductPriceValid(p.price)) {
+                                Utils::pause();
+                                break;
+                            }
 
                             p.quantity = Utils::getPositiveInteger("Enter Quantity: ");
+                            
+                            // ===== VALIDATION: Product inventory validation =====
+                            if(!ValidationHelper::isProductInventoryValid(p.quantity)) {
+                                Utils::pause();
+                                break;
+                            }
                         }
                         catch (const char* msg) {
                             Utils::printWarning(msg);
@@ -1243,6 +1494,12 @@ class Staff : public User {
 
                 cout << "New Username: ";
                 cin >> userName;
+                
+                // ===== VALIDATION 1: Check if username already exists =====
+                if(ValidationHelper::isUsernameExists(filename, userName)) {
+                    return false;
+                }
+                
                 cout << "New Password: ";
                 cin >> passWord;
 
@@ -1253,7 +1510,7 @@ class Staff : public User {
                 outFile << userName << " " << passWord << endl;
                 outFile.close();
 
-                cout << "Registration successful.\n"; 
+                Utils::printStatus("Registration successful!", true);
                 
                 // ===== AUDIT LOG: Staff Registration =====
                 writeLog("STAFF REGISTERED", userName);
@@ -1261,7 +1518,7 @@ class Staff : public User {
                 return true;
             }
             catch (const char* msg) {
-                cout << msg << endl;
+                Utils::printWarning(msg);
                 return false;
             }
         }
@@ -1328,6 +1585,12 @@ class Customer : public User {
                 cout << "New Username: ";
                 cin >> ws; 
                 cin >> userName;
+                
+                // ===== VALIDATION 1: Check if username already exists =====
+                if(ValidationHelper::isUsernameExists(filename, userName)) {
+                    return false;
+                }
+                
                 cout << "New Password: ";
                 cin >> passWord;
 
@@ -1338,7 +1601,7 @@ class Customer : public User {
                 outFile << userName << " " << passWord << endl;
                 outFile.close();
 
-                cout << "Registration successful.\n"; 
+                Utils::printStatus("Registration successful!", true);
                 
                 // ===== AUDIT LOG: Customer Registration =====
                 writeLog("CUSTOMER REGISTERED", userName);
@@ -1346,7 +1609,7 @@ class Customer : public User {
                 return true;
             }
             catch (const char* msg) {
-                cout << msg << endl;
+                Utils::printWarning(msg);
                 return false;
             }
         }
@@ -1450,6 +1713,19 @@ class Customer : public User {
                             Utils::printWarning(msg);
                             cin.clear();
                             cin.ignore(1000, '\n');
+                            Utils::pause();
+                            break;
+                        }
+
+                        // ===== VALIDATION 2: Check if product ID exists =====
+                        if(!ValidationHelper::isProductIDExists(Staff::plist, productID)) {
+                            Utils::printWarning("Product not found!");
+                            Utils::pause();
+                            break;
+                        }
+                        
+                        // ===== VALIDATION 3: Check if purchase quantity is reasonable =====
+                        if(!ValidationHelper::isPurchaseQuantityValid(Staff::plist, productID, quantity)) {
                             Utils::pause();
                             break;
                         }
@@ -1784,7 +2060,33 @@ class PurchaseHistory {
 };
 
 int main() { 
-    Staff::plist.loadFromFile(); 
+    Staff::plist.loadFromFile();
+    
+    // ===== VALIDATION 4: Check if important files are empty at startup =====
+    cout << "\n[System Startup Check]\n";
+    
+    if(ValidationHelper::isFileEmpty("product.txt")) {
+        cout << "[!] Product file is empty. Please add products first.\n";
+    } else {
+        int productCount = ValidationHelper::getProductCountInFile("product.txt");
+        cout << "[+] " << productCount << " products loaded.\n";
+    }
+    
+    if(ValidationHelper::isFileEmpty("staff.txt")) {
+        cout << "[!] Staff file is empty. Consider registering staff accounts.\n";
+    } else {
+        int staffCount = ValidationHelper::getCustomerCountInFile("staff.txt");
+        cout << "[+] " << staffCount << " staff accounts available.\n";
+    }
+    
+    if(ValidationHelper::isFileEmpty("customer.txt")) {
+        cout << "[!] Customer file is empty. New customer registrations welcome.\n";
+    } else {
+        int customerCount = ValidationHelper::getCustomerCountInFile("customer.txt");
+        cout << "[+] " << customerCount << " customer accounts available.\n";
+    }
+    
+    Utils::pause();
 
 	int choice; 
 	User* user = NULL; 
