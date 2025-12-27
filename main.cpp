@@ -1,7 +1,93 @@
 #include <iostream> 
 #include <fstream> 
 #include <cstring> 
+#include <ctime>
+#include <sstream>
 using namespace std; 
+
+// ===== AUDIT LOG SYSTEM =====
+void writeLog(const char* action, const char* username = "unknown") {
+    ofstream log("log.txt", ios::app);
+    if(!log) {
+        cerr << "Cannot open log file.\n";
+        return;
+    }
+    
+    time_t now = time(0);
+    struct tm* timeinfo = localtime(&now);
+    char timestamp[100];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", timeinfo);
+    
+    log << "[" << timestamp << "] ";
+    log << "[" << username << "] ";
+    log << action << endl;
+    
+    log.close();
+}
+
+// Log action with product ID
+void writeLogWithID(const char* action, int id, const char* username = "unknown") {
+    ofstream log("log.txt", ios::app);
+    if(!log) {
+        cerr << "Cannot open log file.\n";
+        return;
+    }
+    
+    time_t now = time(0);
+    struct tm* timeinfo = localtime(&now);
+    char timestamp[100];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", timeinfo);
+    
+    log << "[" << timestamp << "] ";
+    log << "[" << username << "] ";
+    log << action << " (ID: " << id << ")" << endl;
+    
+    log.close();
+}
+
+// Log action with product name and price
+void writeLogWithProduct(const char* action, const char* productName, double price, int qty, const char* username = "unknown") {
+    ofstream log("log.txt", ios::app);
+    if(!log) {
+        cerr << "Cannot open log file.\n";
+        return;
+    }
+    
+    time_t now = time(0);
+    struct tm* timeinfo = localtime(&now);
+    char timestamp[100];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", timeinfo);
+    
+    log << "[" << timestamp << "] ";
+    log << "[" << username << "] ";
+    log << action << " - Product: " << productName 
+        << " (Price: RM" << price << ", Qty: " << qty << ")" << endl;
+    
+    log.close();
+}
+
+// Log purchase transaction
+void writeLogPurchase(const char* customerName, const char* productName, int qty, double totalPrice, const char* username = "unknown") {
+    ofstream log("log.txt", ios::app);
+    if(!log) {
+        cerr << "Cannot open log file.\n";
+        return;
+    }
+    
+    time_t now = time(0);
+    struct tm* timeinfo = localtime(&now);
+    char timestamp[100];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", timeinfo);
+    
+    log << "[" << timestamp << "] ";
+    log << "[" << username << "] ";
+    log << "PURCHASE - Customer: " << customerName 
+        << " | Product: " << productName 
+        << " | Qty: " << qty 
+        << " | Total: RM" << totalPrice << endl;
+    
+    log.close();
+} 
 
 struct Product {
 	int id; 
@@ -113,7 +199,7 @@ class ProductList {
             return false; 
         } 
 
-        bool purchaseProduct(int productID, int quantity) {
+        bool purchaseProduct(int productID, int quantity, const char* customerName = "unknown") {
             Node* cur = head; 
 
             while(cur != NULL) {
@@ -145,8 +231,29 @@ class ProductList {
                         cout << msg << endl;
                     }
                     
+                    // write in purchase.txt
+                    try {
+                        ofstream purchaseFile("purchase.txt", ios::app); 
+                        if (!purchaseFile)
+                            throw "File cannot be opened.";
+
+                        purchaseFile << customerName << "|" 
+                                     << cur->data.id << "|" 
+                                     << cur->data.name << "|" 
+                                     << quantity << "|" 
+                                     << cur->data.price << endl; 
+                    
+                        purchaseFile.close();  
+                    }
+                    catch (const char* msg) {
+                        cout << msg << endl;
+                    }
+                    
                     cout << "Purchase successful!\n"; 
                     cout << "Total: RM " << cur->data.price * quantity << endl; 
+                    
+                    // ===== AUDIT LOG: Purchase Product =====
+                    writeLogPurchase(customerName, cur->data.name, quantity, cur->data.price * quantity, customerName);
 
                     return true; 
                 } 
@@ -547,7 +654,7 @@ class SalesSummary {
             totalQuantity = 0; 
         } 
         
-        void generateReport() {
+        void generateReport(const char* staffName = "unknown") {
             try {
                 ifstream inFile("purchase.txt"); 
                 ofstream outFile("summary.txt"); 
@@ -574,6 +681,9 @@ class SalesSummary {
                 outFile.close();
 
                 cout << "Summary report generated successfully.\n";
+                
+                // ===== AUDIT LOG: Generate Sales Summary =====
+                writeLog("GENERATE SALES SUMMARY", staffName);
             }
             catch (const char* msg) {
                 cout << msg << endl;
@@ -673,31 +783,45 @@ class Staff : public User {
                         plist.saveToFile();  
 
                         cout << "Product added successfully!\n";
+                        
+                        // ===== AUDIT LOG: Add Product =====
+                        writeLogWithProduct("ADD PRODUCT", p.name, p.price, p.quantity, username);
                         break;
                     }
 
                     case 2:
                         cout << "Display Products (coming soon)\n";
+                        // ===== AUDIT LOG: Display Products =====
+                        writeLog("DISPLAY PRODUCTS", username);
                         break; 
                     case 3: 
                         plist.sortByPrice(); 
                         cout << "Products sorted by price.\n"; 
+                        // ===== AUDIT LOG: Sort Products =====
+                        writeLog("SORT PRODUCTS BY PRICE", username);
                         break;     
-                    case 4: 
+                    case 4: {
                         int searchID;
                         cout << "Enter Product ID to search: ";
                         cin >> searchID;
                         plist.searchByID(searchID);
+                        // ===== AUDIT LOG: Search Product =====
+                        writeLogWithID("SEARCH PRODUCT", searchID, username);
                         break;
-                    case 5: 
+                    }
+                    case 5: {
                         int deleteID;
                         cout << "Enter Product ID to delete: ";
                         cin >> deleteID;
                         plist.deleteProduct(deleteID);
-                        break; 
+                        
+                        // ===== AUDIT LOG: Delete Product =====
+                        writeLogWithID("DELETE PRODUCT", deleteID, username);
+                        break;
+                    } 
                     case 6: {
                         SalesSummary ss; 
-                        ss.generateReport(); 
+                        ss.generateReport(username); 
                         break;
                     }     
                     case 0:
@@ -729,12 +853,18 @@ class Staff : public User {
                         strcpy(password, passWord); 
                         inFile.close(); 
 
+                        // ===== AUDIT LOG: Staff Login =====
+                        writeLog("STAFF LOGIN", userName);
+
                         return true; 
                     } 
                 } 
 
                 inFile.close(); 
                 cout << "Invalid login.\n"; 
+                
+                // ===== AUDIT LOG: Failed Login Attempt =====
+                writeLog("STAFF LOGIN FAILED", userName);
 
                 return false; 
             }
@@ -761,6 +891,9 @@ class Staff : public User {
                 outFile.close();
 
                 cout << "Registration successful.\n"; 
+                
+                // ===== AUDIT LOG: Staff Registration =====
+                writeLog("STAFF REGISTERED", userName);
 
                 return true;
             }
@@ -801,12 +934,21 @@ class Customer : public User {
                     if(strcmp(userName, fileUserName) == 0 && strcmp(passWord, filePassWord) == 0) {
                         inFile.close(); 
 
+                        strcpy(username, userName);
+                        strcpy(password, passWord);
+                        
+                        // ===== AUDIT LOG: Customer Login =====
+                        writeLog("CUSTOMER LOGIN", userName);
+
                         return true; 
                     } 
                 } 
 
                 inFile.close(); 
                 cout << "Invalid login.\n"; 
+                
+                // ===== AUDIT LOG: Failed Customer Login =====
+                writeLog("CUSTOMER LOGIN FAILED", userName);
 
                 return false; 
             }
@@ -834,6 +976,9 @@ class Customer : public User {
                 outFile.close();
 
                 cout << "Registration successful.\n"; 
+                
+                // ===== AUDIT LOG: Customer Registration =====
+                writeLog("CUSTOMER REGISTERED", userName);
 
                 return true;
             }
@@ -900,15 +1045,22 @@ class Customer : public User {
                 switch(choice) {
                     case 1:
                         Staff::plist.displayProducts(); 
+                        // ===== AUDIT LOG: View Products =====
+                        writeLog("VIEW PRODUCTS", username);
                         break;
-                    case 2:
+                    case 2: {
                         cout << "Enter Product ID to search: "; 
                         cin >> studentID; 
                         Staff::plist.searchByID(studentID); 
-                        break; 
+                        // ===== AUDIT LOG: Customer Search Product =====
+                        writeLogWithID("SEARCH PRODUCT", studentID, username);
+                        break;
+                    }
                     case 3: 
                         Staff::plist.sortByPrice(); 
                         cout << "Products sorted by price.\n"; 
+                        // ===== AUDIT LOG: Customer Sort Products =====
+                        writeLog("SORT PRODUCTS BY PRICE", username);
                         break; 
                     case 4: {
                         int productID, quantity; 
@@ -932,7 +1084,7 @@ class Customer : public User {
                             break;
                         }
 
-                        Staff::plist.purchaseProduct(productID, quantity); 
+                        Staff::plist.purchaseProduct(productID, quantity, username); 
                         break; 
                     } 
                     case 0:
