@@ -14,7 +14,7 @@ using namespace std;
 // ===== AUDIT LOG SYSTEM =====
 
 /*
-  Function: writeLog
+  Function: writeLog 1
   Purpose: Writes a generic audit log entry to log.txt with timestamp and username
   Parameters:
     - action: The action being logged (e.g., "LOGIN", "DELETE PRODUCT")
