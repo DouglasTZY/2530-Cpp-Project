@@ -1,0 +1,54 @@
+[Joel's Task: User Experience & Input Safety]
+=========================================
+Goal: Make the program impossible to crash and simpler to navigate.
+Tip for Originality: Change the decoration symbols (use *, #, or -), and rewrite the error messages to be unique.
+
+TASK 1: Robust Input (Anti-Crash)
+-----------------------------------------
+Stop the program from breaking if someone types "abc" instead of "123".
+
+// COPY & MODIFY THIS LOGIC:
+int getSafeInt(string prompt) {
+    int input;
+    while (true) {
+        cout << prompt;
+        if (cin >> input) {
+            // Valid number
+            return input;
+        } else {
+            // Error handling
+            cin.clear(); // Clear error flag
+            cin.ignore(10000, '\n'); // Discard bad input
+            cout << "[!] Invalid input. Please enter a NUMBER only.\n";
+        }
+    }
+}
+
+TASK 2: "Loading" Effect (Style)
+-----------------------------------------
+Make it feel like a real system when saving/loading files.
+
+// Requires: #include <windows.h>  (for Sleep)
+void showLoadingBar(string message) {
+    cout << message;
+    for (int i = 0; i < 5; i++) {
+        cout << ".";
+        Sleep(300); // Waits 300ms
+    }
+    cout << " [DONE]" << endl;
+}
+
+TASK 3: Boxed Menu Design
+-----------------------------------------
+Make the main menu look like a dialogue box.
+
+void showBoxedMenu() {
+    system("cls"); // Clear screen
+    cout << "##########################################\n";
+    cout << "#          INVENTORY SYSTEM v2.0         #\n";
+    cout << "##########################################\n";
+    cout << "#  1. Admin Login                        #\n";
+    cout << "#  2. Customer View                      #\n";
+    cout << "#  3. Exit                               #\n";
+    cout << "##########################################\n";
+}

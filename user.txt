@@ -1,0 +1,65 @@
+[User's Task: Logic Optimization & Architecture]
+=========================================
+Goal: Improve the code efficiency and structure (Higher Marks for "Coding Standards").
+Tip for Originality: Rename variables (e.g. `isSwapped` -> `hasChanged`), and change loop structures (for -> while).
+
+TASK 1: Optimized Sorting (Efficiency)
+-----------------------------------------
+Your current bubble sort runs O(n^2) every time. Optimizing it shows you understand algorithms.
+
+// IMPROVED LOGIC:
+void optimizedSort() {
+    if (head == NULL) return; // Empty list check
+    
+    bool swapped;
+    Node* ptr1;
+    Node* lptr = NULL; // Last sorted pointer (optimization)
+
+    do {
+        swapped = false;
+        ptr1 = head;
+
+        // "lptr" stops us from re-checking elements that are already sorted at the end
+        while (ptr1->next != lptr) {
+            if (ptr1->data.price > ptr1->next->data.price) {
+                // Swap Data Logic
+                Product temp = ptr1->data;
+                ptr1->data = ptr1->next->data;
+                ptr1->next->data = temp;
+                swapped = true;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1; // Reduce range for next pass
+    } while (swapped);
+}
+
+TASK 2: Header File Structure (Concept)
+-----------------------------------------
+Even if you write in one file for now, group your code like this to show "Architecture".
+
+// SECTION 1: STRUCTURES
+struct Product { ... };
+struct Node { ... };
+
+// SECTION 2: HANDLERS (New Class Idea)
+class FileManager {
+    // Put all loadFromFile / saveToFile logic here
+    // This separates "Data Logic" from "Business Logic"
+};
+
+// SECTION 3: MAIN LOGIC
+class InventorySystem {
+    // Put add/delete/update logic here
+};
+
+TASK 3: Anti-Plagiarism Comments
+-----------------------------------------
+Add detailed explanation comments that PROVE you understand the code.
+
+// BAD Comment:
+// if head is null, return.
+
+// GOOD (Original) Comment:
+// Checking if the inventory list is empty. If there are no nodes (head is NULL), 
+// we simply exit the function to prevent segmentation faults.
