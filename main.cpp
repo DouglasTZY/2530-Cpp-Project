@@ -392,7 +392,13 @@ class ProductList {
     public:
         ProductList() {
             head = NULL; 
-        }    
+        }
+
+        // Friend Function Declarations
+        friend double calculateTotalStockValue(ProductList& plist);
+        friend int getTotalStockCount(ProductList& plist);
+        friend void debugInventoryStructure(ProductList& plist);
+        friend bool isInventoryHealthy(ProductList& plist);    
 
         // Frees all nodes to prevent memory leaks
         ~ProductList() {
@@ -1530,9 +1536,60 @@ void printProductDetails(const Product& p) {
     cout << "=====================================\n";
 }
 
-double calculateTotalStockValue(ProductList* plist) {
-    double totalValue = 0;
+// Friend function 1: Calculate total stock value by accessing private head
+double calculateTotalStockValue(ProductList& plist) {
+    double totalValue = 0.0;
+    Node* current = plist.head; // Direct access to private member 'head'
+    
+    while(current != NULL) {
+        totalValue += (current->data.price * current->data.quantity);
+        current = current->next;
+    }
     return totalValue;
+}
+
+// Friend function 2: Get total count of all items in stock
+int getTotalStockCount(ProductList& plist) {
+    int count = 0;
+    Node* current = plist.head; // Direct access to private member 'head'
+    
+    while(current != NULL) {
+        count += current->data.quantity;
+        current = current->next;
+    }
+    return count;
+}
+
+// Friend function 3: Debug inventory structure (print node addresses)
+void debugInventoryStructure(ProductList& plist) {
+    cout << "\n[DEBUG] Linked List Structure:\n";
+    Node* current = plist.head; // Direct access to private member 'head'
+    int index = 0;
+    
+    if (current == NULL) {
+        cout << "(Empty List)\n";
+        return;
+    }
+
+    while(current != NULL) {
+        cout << "Node " << index++ << " [" << current << "] -> Product ID: " 
+             << current->data.id << "\n";
+        current = current->next;
+    }
+    cout << "End of List [NULL]\n";
+}
+
+// Friend function 4: Check if inventory is healthy (no negative values)
+bool isInventoryHealthy(ProductList& plist) {
+    Node* current = plist.head; // Direct access to private member 'head'
+    
+    while(current != NULL) {
+        if (current->data.price < 0 || current->data.quantity < 0) {
+            return false; // Found invalid data
+        }
+        current = current->next;
+    }
+    return true; // All good
 }
 
 // ===== VALIDATION & EXCEPTION HANDLING =====
@@ -1999,6 +2056,21 @@ class User {
 		  Implementation: Overridden by Staff and Customer classes
 		*/
 		virtual void menu() = 0; // pure virtual 
+};
+
+/* 
+  Class: BaseReport
+  Purpose: Abstract base class for all reporting components
+  Requirement: 2nd Base Class
+*/
+class BaseReport {
+    public:
+        // Pure virtual function acting as interface
+        virtual void generateReport(const char* staffName = "unknown") = 0;
+        
+        virtual ~BaseReport() {
+            // Virtual destructor
+        }
 }; 
 
 /*
@@ -2013,7 +2085,7 @@ class User {
     - Calculate average transaction values
     - Generate daily sales summaries
 */
-class SalesSummary {
+class SalesSummary : public BaseReport {
     private: 
         float totalSales; 
         int totalQuantity; 
