@@ -14,6 +14,7 @@ using namespace std;
 
 // ===== AUDIT LOG SYSTEM =====
 
+// added
 // Writes action to log.txt with timestamp and username
 void writeLog(const char* action, const char* username = "unknown") {
     ofstream log("log.txt", ios::app);
