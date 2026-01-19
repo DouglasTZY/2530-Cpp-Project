@@ -1,9 +1,3 @@
-// Douglas Tan Tze Yu 1221206532
-// Joel Nithyananthan Paramananthan 1211205630
-// Chua Rui Cheng 1221207214 
-// RS6 
-// Data Structure and Algorithm Project - Stationery Shop Management System 
-
 #include <iostream> 
 #include <fstream> 
 #include <cstring> 
@@ -11,40 +5,20 @@
 #include <sstream>
 #include <clocale>
 #include <cmath>
-#include <iomanip>
 using namespace std;
 
 // UTF-8 Support for Windows
 #ifdef _WIN32
 #include <windows.h>
-#endif
-
-// ===== COLOR DISPLAY SYSTEM (Rui's Enhancement) =====
-// Displays colored text in Windows console for better visual feedback
-void showWithColor(const char* text, int colorCode) {
-    // Color Codes: 10=Green, 12=Red, 14=Yellow, 11=Cyan, 13=Magenta, 15=White
-    #ifdef _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, colorCode);
-    cout << text;
-    SetConsoleTextAttribute(hConsole, 15); // Reset to white
-    #else
-    cout << text; // Fallback for non-Windows systems
-    #endif
-}
-
-// Overloaded version for string objects
-void showWithColor(string text, int colorCode) {
-    showWithColor(text.c_str(), colorCode);
-} 
+#endif 
 
 // ===== AUDIT LOG SYSTEM =====
-// testing...
-// testing...
-// testing...
-// testing...12
-// testing...29
-
+//testing...
+//testing...
+//testing...
+//testing...
+//testing...
+//testing... 34
 // Writes action to log.txt with timestamp and username
 void writeLog(const char* action, const char* username = "unknown") {
     ofstream log("log.txt", ios::app);
@@ -183,31 +157,26 @@ public:
         cout << "\n";
     }
     
-    // Prints formatted header with title (Enhanced with colors)
+    // Prints formatted header with title
     static void printHeader(const char* title) {
         Utils::clearScreen();
-        showWithColor("=====================================\n", 13); // Magenta
-        showWithColor("     ", 15);
-        showWithColor(title, 11); // Cyan
-        cout << endl;
-        showWithColor("=====================================\n", 13); // Magenta
+        Utils::printLine();
+        cout << "     " << title << endl;
+        Utils::printLine();
     }
     
-    // Displays status message with [OK] or [✗ ERROR] prefix (Enhanced with colors)
+    // Displays status message with [OK] or [✗ ERROR] prefix
     static void printStatus(const char* message, bool isSuccess = true) {
         if(isSuccess) {
-            showWithColor("\n[SUCCESS] ", 10); // Green
-            cout << message << endl;
+            cout << "\n[OK] " << message << endl;
         } else {
-            showWithColor("\n[ERROR] ", 12); // Red
-            cout << message << endl;
+            cout << "\n[✗ ERROR] " << message << endl;
         }
     }
     
-    // Displays warning message with [!] prefix (Enhanced with colors)
+    // Displays warning message with [!] prefix
     static void printWarning(const char* message) {
-        showWithColor("\n[WARNING] ", 14); // Yellow
-        cout << message << endl;
+        cout << "\n[!] " << message << endl;
     }
     
     // Prints menu divider (37 hyphens)
@@ -339,18 +308,15 @@ public:
     }
 
     static void printSuccess(const char* message) {
-        showWithColor("\n[SUCCESS] ", 10); // Green
-        cout << message << endl;
+        cout << "\n[SUCCESS] " << message << endl;
     }
 
     static void printInfo(const char* message) {
-        showWithColor("\n[INFO] ", 11); // Cyan
-        cout << message << endl;
+        cout << "\n[INFO] " << message << endl;
     }
 
     static void printError(const char* message) {
-        showWithColor("\n[ERROR] ", 12); // Red
-        cout << message << endl;
+        cout << "\n[ERROR] " << message << endl;
     }
 
     static int getIntInput(const char* prompt, int minValue, int maxValue) {
@@ -466,31 +432,22 @@ class ProductList {
             }
         } 
 
-        // Displays all products in professional table format (Rui's Enhancement)
+        // Displays all products in table format
         void displayProducts() {
             Node* cur = head; 
             if(cur == NULL) {
-                showWithColor("\n[INFO] No products available.\n", 14); // Yellow
+                cout << "No products available.\n"; 
                 return; 
             } 
 
-            // Professional table header with color
-            showWithColor("\n============================================================\n", 11); // Cyan
-            cout << left << setw(10) << "ID" 
-                 << left << setw(25) << "Product Name" 
-                 << left << setw(15) << "Price (RM)" 
-                 << left << setw(10) << "Qty" << endl;
-            showWithColor("============================================================\n", 11); // Cyan
-            
-            // Display each product with proper alignment
+            cout << "\nID\tName\t\tPrice\tQty\n"; 
             while(cur != NULL) {
-                cout << left << setw(10) << cur->data.id
-                     << left << setw(25) << cur->data.name
-                     << left << setw(15) << fixed << setprecision(2) << cur->data.price
-                     << left << setw(10) << cur->data.quantity << endl;
+                cout << cur->data.id << "\t"
+                     << cur->data.name << "\t\t"
+                     << cur->data.price << "\t"
+                     << cur->data.quantity << endl;
                 cur = cur->next;
             }
-            showWithColor("============================================================\n", 11); // Cyan
         } 
 
         // Sorts products by price using bubble sort (O(n²))
@@ -847,7 +804,7 @@ class ProductList {
                 return; 
             } 
 
-            showWithColor("\n========== Low Stock Report ==========\n", 12); // 红色 - 警告标题
+            cout << "\n========== Low Stock Report ==========\n"; 
             cout << "Products with quantity below 10 units:\n\n"; 
 
             Node* cur = head; 
@@ -863,9 +820,9 @@ class ProductList {
                     cout << "Quantity: " << cur->data.quantity << " units"; 
 
                     if(cur->data.quantity == 0) {
-                        showWithColor(" [OUT OF STOCK]", 12); // 红色 - 紧急
+                        cout << " [OUT OF STOCK]"; 
                     } else if(cur->data.quantity < 5) {
-                        showWithColor(" [CRITICAL]", 14); // 黄色 - 警告
+                        cout << " [CRITICAL]"; 
                     } 
 
                     cout << endl; 
@@ -874,10 +831,9 @@ class ProductList {
             } 
 
             if(lowStockCount == 0) {
-                showWithColor("All products have sufficient stock (>= 10 units).\n", 10); // 绿色 - 正常
+                cout << "All products have sufficient stock (>= 10 units).\n"; 
             } else {
-                showWithColor("\nTotal low stock products: ", 14); // 黄色
-                cout << lowStockCount << endl; 
+                cout << "\nTotal low stock products: " << lowStockCount << endl; 
             } 
         } 
 
@@ -888,9 +844,9 @@ class ProductList {
                 return; 
             } 
 
-            showWithColor("\n========== Products by Category ==========\n", 11); // 青色标题
+            cout << "\n========== Products by Category ==========\n"; 
 
-            showWithColor("\n--- Budget Products (< RM 50) ---\n", 10); // 绿色 - 便宜
+            cout << "\n--- Budget Products (< RM 50) ---\n"; 
             cout << "ID\tName\t\tPrice\tQty\n"; 
             Node* cur = head; 
             int budgetCount = 0; 
@@ -909,7 +865,7 @@ class ProductList {
                 cout << "No budget products available.\n"; 
             } 
 
-            showWithColor("\n--- Standard Products (RM 50 - RM 150) ---\n", 14); // 黄色 - 中等
+            cout << "\n--- Standard Products (RM 50 - RM 150) ---\n"; 
             cout << "ID\tName\t\tPrice\tQty\n"; 
             cur = head; 
             int standardCount = 0; 
@@ -928,7 +884,7 @@ class ProductList {
                 cout << "No standard products available.\n"; 
             } 
 
-            showWithColor("\n--- Premium Products (> RM 150) ---\n", 13); // 洋红色 - 高端
+            cout << "\n--- Premium Products (> RM 150) ---\n"; 
             cout << "ID\tName\t\tPrice\tQty\n"; 
             cur = head; 
             int premiumCount = 0; 
@@ -947,7 +903,7 @@ class ProductList {
                 cout << "No premium products available.\n"; 
             } 
 
-            showWithColor("\n--- Category Summary ---\n", 11); // 青色
+            cout << "\n--- Category Summary ---\n"; 
             cout << "Budget Products: " << budgetCount << endl; 
             cout << "Standard Products: " << standardCount << endl; 
             cout << "Premium Products: " << premiumCount << endl; 
@@ -1276,9 +1232,9 @@ public:
             return;
         }
         
-        showWithColor("\n========== PENDING TRANSACTIONS QUEUE ==========\n", 14); // 黄色 - 待处理
-        showWithColor("Trans#\tCustomer\t\tProductID\tQty\tAmount(RM)\n", 11); // 青色表头
-        showWithColor("------\t--------\t\t---------\t---\t----------\n", 11);
+        cout << "\n========== PENDING TRANSACTIONS QUEUE ==========\n";
+        cout << "Trans#\tCustomer\t\tProductID\tQty\tAmount(RM)\n";
+        cout << "------\t--------\t\t---------\t---\t----------\n";
         
         QueueNode* current = front;
         while(current != NULL) {
@@ -1290,11 +1246,9 @@ public:
             current = current->next;
         }
         
-        showWithColor("------\t--------\t\t---------\t---\t----------\n", 11);
-        showWithColor("Total Pending Transactions: ", 14); // 黄色
-        cout << transactionCount << "\n";
-        showWithColor("Total Amount: RM ", 10); // 绿色 - 强调金额
-        cout << getTotalAmount() << endl;
+        cout << "------\t--------\t\t---------\t---\t----------\n";
+        cout << "Total Pending Transactions: " << transactionCount << "\n";
+        cout << "Total Amount: RM " << getTotalAmount() << endl;
     }
     
     double getTotalAmount() {
@@ -2225,11 +2179,9 @@ class SalesSummary : public BaseReport {
                 
                 inFile.close();
                 
-                showWithColor("\n===== HIGHEST SALES PRODUCT =====\n", 10); // 绿色 - 最高销售
-                showWithColor("Product: ", 14); // 黄色标签
-                cout << highestProduct << endl;
-                showWithColor("Total Sales: RM ", 10); // 绿色 - 强调金额
-                cout << highestSales << endl;
+                cout << "\n===== HIGHEST SALES PRODUCT =====\n";
+                cout << "Product: " << highestProduct << endl;
+                cout << "Total Sales: RM " << highestSales << endl;
                 
                 writeLog("RETRIEVE HIGHEST SALES PRODUCT", staffName);
             }
@@ -2270,11 +2222,9 @@ class SalesSummary : public BaseReport {
                 
                 inFile.close();
                 
-                showWithColor("\n===== LOWEST SALES PRODUCT =====\n", 12); // 红色 - 最低销售
-                showWithColor("Product: ", 14); // 黄色标签
-                cout << lowestProduct << endl;
-                showWithColor("Total Sales: RM ", 14); // 黄色 - 需要关注
-                cout << lowestSales << endl;
+                cout << "\n===== LOWEST SALES PRODUCT =====\n";
+                cout << "Product: " << lowestProduct << endl;
+                cout << "Total Sales: RM " << lowestSales << endl;
                 
                 writeLog("RETRIEVE LOWEST SALES PRODUCT", staffName);
             }
@@ -2314,13 +2264,10 @@ class SalesSummary : public BaseReport {
                 
                 float averageSales = (transactionCount > 0) ? (totalSales / transactionCount) : 0;
                 
-                showWithColor("\n===== AVERAGE SALES PER TRANSACTION =====\n", 11); // 青色 - 统计信息
-                showWithColor("Total Transactions: ", 14);
-                cout << transactionCount << endl;
-                showWithColor("Total Sales Amount: RM ", 14);
-                cout << totalSales << endl;
-                showWithColor("Average Per Transaction: RM ", 10); // 绿色 - 重要指标
-                cout << averageSales << endl;
+                cout << "\n===== AVERAGE SALES PER TRANSACTION =====\n";
+                cout << "Total Transactions: " << transactionCount << endl;
+                cout << "Total Sales Amount: RM " << totalSales << endl;
+                cout << "Average Per Transaction: RM " << averageSales << endl;
                 
                 writeLog("RETRIEVE AVERAGE SALES PER TRANSACTION", staffName);
             }
@@ -2454,14 +2401,11 @@ class Staff : public User {
             do {
                 Utils::clearScreen();
                 Utils::printHeader("STAFF LOGIN");
-                showWithColor("1. ", 14);
-                cout << "Login\n";
-                showWithColor("2. ", 14);
-                cout << "Register\n";
-                showWithColor("0. ", 12);
-                cout << "Back\n";
+                cout << "1. Login\n";
+                cout << "2. Register\n";
+                cout << "0. Back\n";
                 Utils::printDivider();
-                showWithColor("Enter choice: ", 11);
+                cout << "Enter choice: ";
                 try {
                     cin >> choice;
                     if (cin.fail()) {
@@ -2493,24 +2437,24 @@ class Staff : public User {
 			do {
                 Utils::clearScreen();
                 Utils::printHeader("STAFF MENU");
-                showWithColor("1. ", 14); cout << "Add Product\n";
-                showWithColor("2. ", 14); cout << "Display Products\n"; 
-                showWithColor("3. ", 14); cout << "Sort Products by Price\n"; 
-                showWithColor("4. ", 14); cout << "Search Product by ID\n"; 
-                showWithColor("5. ", 14); cout << "Delete Product\n"; 
-                showWithColor("6. ", 14); cout << "Generate Sales Summary\n";
-                showWithColor("7. ", 14); cout << "Get Highest Sales Product\n";
-                showWithColor("8. ", 14); cout << "Get Lowest Sales Product\n";
-                showWithColor("9. ", 14); cout << "Get Average Sales Per Transaction\n";
-                showWithColor("10. ", 14); cout << "Generate Daily Summary\n";
-                showWithColor("11. ", 14); cout << "Update Product Price\n";
-                showWithColor("12. ", 14); cout << "Update Product Quantity\n";
-                showWithColor("13. ", 14); cout << "Sort by QuickSort Algorithm\n";
-                showWithColor("14. ", 14); cout << "Check Low Stock\n";
-                showWithColor("15. ", 14); cout << "Product Statistics\n";
-                showWithColor("0. ", 12); cout << "Logout\n";
+                cout << "1. Add Product\n";
+                cout << "2. Display Products\n"; 
+                cout << "3. Sort Products by Price\n"; 
+                cout << "4. Search Product by ID\n"; 
+                cout << "5. Delete Product\n"; 
+                cout << "6. Generate Sales Summary\n";
+                cout << "7. Get Highest Sales Product\n";
+                cout << "8. Get Lowest Sales Product\n";
+                cout << "9. Get Average Sales Per Transaction\n";
+                cout << "10. Generate Daily Summary\n";
+                cout << "11. Update Product Price\n";
+                cout << "12. Update Product Quantity\n";
+                cout << "13. Sort by QuickSort Algorithm\n";
+                cout << "14. Check Low Stock\n";
+                cout << "15. Product Statistics\n";
+                cout << "0. Logout\n";
                 Utils::printDivider();
-                showWithColor("Enter choice: ", 11);
+                cout << "Enter choice: ";
                 try {
                     cin >> choice;
                     if (cin.fail()) {
@@ -2572,7 +2516,7 @@ class Staff : public User {
 
                     case 2:
                         Utils::printHeader("PRODUCT LIST");
-                        plist.displayProducts();
+                        cout << "Display Products (coming soon)\n";
                         writeLog("DISPLAY PRODUCTS", username);
                         Utils::pause();
                         break; 
@@ -2850,14 +2794,14 @@ public:
         do {
             Utils::clearScreen();
             Utils::printHeader("INVENTORY MANAGER MENU");
-            showWithColor("1. ", 14); cout << "Check Low Stock Items\n";
-            showWithColor("2. ", 14); cout << "Generate Reorder Report\n";
-            showWithColor("3. ", 14); cout << "Inventory Statistics\n";
-            showWithColor("4. ", 14); cout << "Product Performance Analysis\n";
-            showWithColor("5. ", 14); cout << "Display by Category\n";
-            showWithColor("0. ", 12); cout << "Logout\n";
+            cout << "1. Check Low Stock Items\n";
+            cout << "2. Generate Reorder Report\n";
+            cout << "3. Inventory Statistics\n";
+            cout << "4. Product Performance Analysis\n";
+            cout << "5. Display by Category\n";
+            cout << "0. Logout\n";
             Utils::printDivider();
-            showWithColor("Enter choice: ", 11);
+            cout << "Enter choice: ";
             
             try {
                 cin >> choice;
@@ -3055,11 +2999,11 @@ class Customer : public User {
             do {
                 Utils::clearScreen();
                 Utils::printHeader("CUSTOMER LOGIN");
-                showWithColor("1. ", 14); cout << "Login\n";
-                showWithColor("2. ", 14); cout << "Register\n";
-                showWithColor("0. ", 12); cout << "Back\n";
+                cout << "1. Login\n";
+                cout << "2. Register\n";
+                cout << "0. Back\n";
                 Utils::printDivider();
-                showWithColor("Enter choice: ", 11);
+                cout << "Enter choice: ";
                 try {
                     cin >> choice;
                     if (cin.fail()) {
@@ -3094,13 +3038,13 @@ class Customer : public User {
             do {
                 Utils::clearScreen();
                 Utils::printHeader("CUSTOMER MENU");
-                showWithColor("1. ", 14); cout << "View Products\n";
-                showWithColor("2. ", 14); cout << "Search Product by ID\n";
-                showWithColor("3. ", 14); cout << "Sort Products by Price\n"; 
-                showWithColor("4. ", 14); cout << "Purchase Product\n"; 
-                showWithColor("0. ", 12); cout << "Logout\n";
+                cout << "1. View Products\n";
+                cout << "2. Search Product by ID\n";
+                cout << "3. Sort Products by Price\n"; 
+                cout << "4. Purchase Product\n"; 
+                cout << "0. Logout\n";
                 Utils::printDivider();
-                showWithColor("Enter choice: ", 11);
+                cout << "Enter choice: ";
                 try {
                     cin >> choice;
                     if (cin.fail()) {
@@ -3609,20 +3553,16 @@ int main() {
 
 	do {
 		Utils::clearScreen();
-		showWithColor("=============================================\n", 13); // 洋红色边框
-		showWithColor("  STATIONERY SHOP MANAGEMENT SYSTEM  \n", 11); // 青色标题
-		showWithColor("=============================================\n", 13); // 洋红色边框
+		Utils::printLine(45);
+		cout << "  STATIONERY SHOP MANAGEMENT SYSTEM  \n"; 
+		Utils::printLine(45);
 		Utils::printDivider();
-		showWithColor("1. ", 14); // 黄色数字
-		cout << "Staff Module\n"; 
-		showWithColor("2. ", 14);
-		cout << "Customer Module\n"; 
-		showWithColor("3. ", 14);
-		cout << "Inventory Manager Module\n";
-		showWithColor("0. ", 12); // 红色退出
-		cout << "Exit\n";
+		cout << "1. Staff Module\n"; 
+		cout << "2. Customer Module\n"; 
+		cout << "3. Inventory Manager Module\n";
+		cout << "0. Exit\n";
 		Utils::printDivider();
-		showWithColor("Enter choice: ", 11); // 青色提示
+		cout << "Enter choice: "; 
 		cin >> choice; 
 
 		switch(choice) {
