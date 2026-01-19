@@ -2,7 +2,7 @@
 // Joel Nithyananthan Paramananthan 1211205630 
 // Chua Rui Cheng 1221207214 
 // RS6 
-// Data Structure and Algorithm Project - Stationery Shop Management System
+// Data Structure and Algorithm Project - Stationery Shop Management System 
 
 #include <iostream> 
 #include <fstream> 
