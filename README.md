@@ -2,9 +2,9 @@
 **Mini Information System**
 
 ### Group Members
-- [Enter Leader Name here] (ID: )
-- [Enter Member Name here] (ID: )
-- [Enter Member Name here] (ID: )
+- [Douglas Tan Tze Yu] (ID: 1221206532)
+- [Joel Nithyananthan Paramananthan] (ID: 1211205630)
+- [Chua Rui Cheng] (ID: 1221207214)
 
 ---
 
