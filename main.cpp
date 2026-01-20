@@ -1026,7 +1026,7 @@ class ProductList {
     public:
 }; 
 
-// Task 1
+
 
 #include <iostream>
 #include <string>
@@ -1066,7 +1066,7 @@ int main() {
     return 0;
 }
 
-//Task 2
+
 
 #include <iostream>
 #include <string>
@@ -1103,7 +1103,7 @@ int main()
     return 0;
 }
 
-//Task 3
+
 
 #include <iostream>
 #include <cstdlib>   // For system("cls")
