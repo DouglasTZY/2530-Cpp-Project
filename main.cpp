@@ -1057,7 +1057,10 @@ int main() {
     cout << "  Safe Input Demonstration\n";
     cout << "------------------------------\n";
 
-   
+    int age = getSafeInt("Enter your age: ");
+    cout << "You entered age: " << age << endl;
+
+    
 
     return 0;
 }
