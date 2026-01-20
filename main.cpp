@@ -1349,6 +1349,4388 @@ int main() {
     menu();
     return 0;
 }
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <iomanip>
+using namespace std;
+
+// Structure for Stationery Item
+struct Item {
+    int id;
+    string name;
+    float price;
+    int quantity;
+};
+
+// Global Data Structures
+vector<Item> inventory;
+queue<Item> billQueue;
+stack<Item> undoStack;
+
+// Function Prototypes
+void addItem();
+void displayItems();
+void searchItem();
+void updateItem();
+void deleteItem();
+void sortItemsByPrice();
+void makeSale();
+void undoLastAdd();
+void menu();
+
+// Add New Item
+void addItem() {
+    Item item;
+    cout << "\nEnter Item ID: ";
+    cin >> item.id;
+    cout << "Enter Item Name: ";
+    cin >> item.name;
+    cout << "Enter Price: ";
+    cin >> item.price;
+    cout << "Enter Quantity: ";
+    cin >> item.quantity;
+
+    inventory.push_back(item);
+    undoStack.push(item);
+
+    cout << "\nItem added successfully!\n";
+}
+
+// Display Inventory
+void displayItems() {
+    if (inventory.empty()) {
+        cout << "\nInventory is empty!\n";
+        return;
+    }
+
+    cout << "\n-------------------------------------------------\n";
+    cout << left << setw(10) << "ID"
+         << setw(15) << "Name"
+         << setw(10) << "Price"
+         << setw(10) << "Qty" << endl;
+    cout << "-------------------------------------------------\n";
+
+    for (auto &item : inventory) {
+        cout << left << setw(10) << item.id
+             << setw(15) << item.name
+             << setw(10) << item.price
+             << setw(10) << item.quantity << endl;
+    }
+}
+
+// Search Item (Linear Search)
+void searchItem() {
+    int key;
+    cout << "\nEnter Item ID to search: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "\nItem Found!\n";
+            cout << "Name: " << item.name
+                 << "\nPrice: " << item.price
+                 << "\nQuantity: " << item.quantity << endl;
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Update Item
+void updateItem() {
+    int key;
+    cout << "\nEnter Item ID to update: ";
+    cin >> key;
+
+    for (auto &item : inventory) {
+        if (item.id == key) {
+            cout << "Enter new price: ";
+            cin >> item.price;
+            cout << "Enter new quantity: ";
+            cin >> item.quantity;
+            cout << "\nItem updated successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Delete Item
+void deleteItem() {
+    int key;
+    cout << "\nEnter Item ID to delete: ";
+    cin >> key;
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == key) {
+            inventory.erase(it);
+            cout << "\nItem deleted successfully!\n";
+            return;
+        }
+    }
+    cout << "\nItem not found!\n";
+}
+
+// Sort Items by Price (Bubble Sort)
+void sortItemsByPrice() {
+    for (int i = 0; i < inventory.size(); i++) {
+        for (int j = 0; j < inventory.size() - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    cout << "\nItems sorted by price!\n";
+}
+
+// Make Sale (Queue)
+void makeSale() {
+    int id, qty;
+    float total = 0;
+
+    cout << "\nEnter Item ID to purchase: ";
+    cin >> id;
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    for (auto &item : inventory) {
+        if (item.id == id && item.quantity >= qty) {
+            Item soldItem = item;
+            soldItem.quantity = qty;
+            billQueue.push(soldItem);
+
+            item.quantity -= qty;
+            total = qty * item.price;
+
+            cout << "\nItem added to bill!\n";
+            cout << "Total Amount: Rs. " << total << endl;
+            return;
+        }
+    }
+    cout << "\nItem unavailable or insufficient stock!\n";
+}
+
+// Undo Last Added Item (Stack)
+void undoLastAdd() {
+    if (undoStack.empty()) {
+        cout << "\nNo operation to undo!\n";
+        return;
+    }
+
+    Item last = undoStack.top();
+    undoStack.pop();
+
+    for (auto it = inventory.begin(); it != inventory.end(); it++) {
+        if (it->id == last.id) {
+            inventory.erase(it);
+            cout << "\nLast add operation undone!\n";
+            return;
+        }
+    }
+}
+
+// Menu
+void menu() {
+    int choice;
+    do {
+        cout << "\n========= STATIONERY SHOP MANAGEMENT =========\n";
+        cout << "1. Add Item\n";
+        cout << "2. Display Items\n";
+        cout << "3. Search Item\n";
+        cout << "4. Update Item\n";
+        cout << "5. Delete Item\n";
+        cout << "6. Sort Items by Price\n";
+        cout << "7. Make Sale\n";
+        cout << "8. Undo Last Add\n";
+        cout << "9. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addItem(); break;
+            case 2: displayItems(); break;
+            case 3: searchItem(); break;
+            case 4: updateItem(); break;
+            case 5: deleteItem(); break;
+            case 6: sortItemsByPrice(); break;
+            case 7: makeSale(); break;
+            case 8: undoLastAdd(); break;
+            case 9: cout << "\nExiting system...\n"; break;
+            default: cout << "\nInvalid choice!\n";
+        }
+    } while (choice != 9);
+}
+
+// Main Function
+int main() {
+    menu();
+    return 0;
+}
+
 // end test 4
 
 
