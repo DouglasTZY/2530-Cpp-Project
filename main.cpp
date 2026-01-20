@@ -1032,6 +1032,11 @@ class ProductList {
 #include <string>
 using namespace std;
 
+// Function to safely get an integer from user
+int getSafeInt(string prompt) {
+    int input;
+
+
 //Task 2
 
 #include <iostream>
