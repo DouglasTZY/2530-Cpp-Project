@@ -1045,7 +1045,12 @@ int getSafeInt(string prompt) {
              } else {
             // Invalid input handling
 
-                        cin.clear();                 // Reset error flags
+                        cin.clear();              // Reset error flags
+                        cin.ignore(10000, '\n');     // Remove invalid input
+            cout << "### Oops! Numbers only. Try again. ###\n";
+        }
+    }
+}
 
 
 
