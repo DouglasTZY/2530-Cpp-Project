@@ -1042,6 +1042,8 @@ int getSafeInt(string prompt) {
         if (cin >> input) {
             // Valid integer entered
             return input;
+             } else {
+            // Invalid input handling
 
 
 //Task 2
