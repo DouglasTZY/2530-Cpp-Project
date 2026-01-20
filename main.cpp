@@ -1066,7 +1066,6 @@ int main() {
     return 0;
 }
 
-
 //Task 2
 
 #include <iostream>
