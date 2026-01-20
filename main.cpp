@@ -837,7 +837,77 @@ class ProductList {
             } 
         } 
 
-       
+        // Displays products grouped by price category (Budget/Standard/Premium)
+        void displayByCategory() {
+            if(head == NULL) {
+                cout << "No products available.\n"; 
+                return; 
+            } 
+
+            cout << "\n========== Products by Category ==========\n"; 
+
+            cout << "\n--- Budget Products (< RM 50) ---\n"; 
+            cout << "ID\tName\t\tPrice\tQty\n"; 
+            Node* cur = head; 
+            int budgetCount = 0; 
+
+            while(cur != NULL) {
+                if(cur->data.price < 50) {
+                    budgetCount++; 
+                    cout << cur->data.id << "\t" 
+                         << cur->data.name << "\t\t" 
+                         << cur->data.price << "\t" 
+                         << cur->data.quantity << endl; 
+                } 
+                cur = cur->next; 
+            } 
+            if(budgetCount == 0) {
+                cout << "No budget products available.\n"; 
+            } 
+
+            cout << "\n--- Standard Products (RM 50 - RM 150) ---\n"; 
+            cout << "ID\tName\t\tPrice\tQty\n"; 
+            cur = head; 
+            int standardCount = 0; 
+
+            while(cur != NULL) {
+                if(cur->data.price >= 50 && cur->data.price <= 150) {
+                    standardCount++; 
+                    cout << cur->data.id << "\t" 
+                         << cur->data.name << "\t\t" 
+                         << cur->data.price << "\t" 
+                         << cur->data.quantity << endl; 
+                } 
+                cur = cur->next; 
+            } 
+            if(standardCount == 0) {
+                cout << "No standard products available.\n"; 
+            } 
+
+            cout << "\n--- Premium Products (> RM 150) ---\n"; 
+            cout << "ID\tName\t\tPrice\tQty\n"; 
+            cur = head; 
+            int premiumCount = 0; 
+
+            while(cur != NULL) {
+                if(cur->data.price > 150) {
+                    premiumCount++; 
+                    cout << cur->data.id << "\t" 
+                         << cur->data.name << "\t\t" 
+                         << cur->data.price << "\t" 
+                         << cur->data.quantity << endl; 
+                } 
+                cur = cur->next; 
+            } 
+            if(premiumCount == 0) {
+                cout << "No premium products available.\n"; 
+            } 
+
+            cout << "\n--- Category Summary ---\n"; 
+            cout << "Budget Products: " << budgetCount << endl; 
+            cout << "Standard Products: " << standardCount << endl; 
+            cout << "Premium Products: " << premiumCount << endl; 
+        } 
 
         // Calculates and displays inventory statistics
         int countTotalProducts() {
