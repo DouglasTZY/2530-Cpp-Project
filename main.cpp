@@ -1045,6 +1045,9 @@ int getSafeInt(string prompt) {
              } else {
             // Invalid input handling
 
+                        cin.clear();                 // Reset error flags
+
+
 
 //Task 2
 
