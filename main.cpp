@@ -1102,31 +1102,7 @@ int main()
     return 0;
 }
 
-//Task 3
 
-#include <iostream>
-#include <cstdlib>   // For system("cls")
-
-using namespace std;
-
-// Function to display boxed main menu
-void showBoxedMenu() {
-    system("cls"); // Clear console screen (Windows)
-
-    cout << "--------------------------------------------\n";
-    cout << "|        SMART INVENTORY CONSOLE           |\n";
-    cout << "--------------------------------------------\n";
-    cout << "|  1. Administrator Access                |\n";
-    cout << "|  2. Browse Products                     |\n";
-    cout << "|  3. Quit Program                        |\n";
-    cout << "--------------------------------------------\n";
-}
-
-int main() {
-    showBoxedMenu();
-
-    return 0;
-}
 
 
 // ===== BINARY SEARCH IMPLEMENTATION =====
