@@ -1030,6 +1030,7 @@ class ProductList {
 
 #include <iostream>
 #include <string>
+using namespace std;
 
 //Task 2
 
