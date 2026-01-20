@@ -1036,6 +1036,13 @@ using namespace std;
 int getSafeInt(string prompt) {
     int input;
 
+    while (true) {
+        cout << prompt;
+
+        if (cin >> input) {
+            // Valid integer entered
+            return input;
+
 
 //Task 2
 
