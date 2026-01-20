@@ -1052,6 +1052,18 @@ int getSafeInt(string prompt) {
     }
 }
 
+int main() {
+    cout << "------------------------------\n";
+    cout << "  Safe Input Demonstration\n";
+    cout << "------------------------------\n";
+
+   
+
+    return 0;
+}
+
+
+
 
 
 //Task 2
