@@ -1060,7 +1060,8 @@ int main() {
     int age = getSafeInt("Enter your age: ");
     cout << "You entered age: " << age << endl;
 
-    
+    cout << "------------------------------\n";
+    cout << "Program ended safely.\n";
 
     return 0;
 }
