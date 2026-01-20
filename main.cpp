@@ -1028,7 +1028,7 @@ class ProductList {
 
 // Task 1
 
-
+#include <iostream>
 
 //Task 2
 
