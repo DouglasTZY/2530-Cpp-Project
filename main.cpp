@@ -1065,42 +1065,7 @@ int main() {
     return 0;
 }
 
-//Task 2
 
-#include <iostream>
-#include <string>
-#include <windows.h>   // For Sleep()
-
-using namespace std;
-
-// Function to show loading animation
-void showLoadingBar(string message) 
-{
-    cout << message;
-
-    for (int i = 0; i < 6; i++) 
-	{
-        cout << "#";
-        Sleep(250); // Pause for 250 milliseconds
-    }
-
-    cout << " COMPLETED!" << endl;
-}
-
-int main() 
-{
-    cout << "-----------------------------\n";
-    cout << "   File Processing System\n";
-    cout << "-----------------------------\n";
-
-    showLoadingBar("Saving data ");
-    showLoadingBar("Loading records ");
-
-    cout << "-----------------------------\n";
-    cout << "All tasks finished successfully.\n";
-
-    return 0;
-}
 
 //Task 3
 
