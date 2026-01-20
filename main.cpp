@@ -1070,7 +1070,7 @@ int main() {
 
 #include <iostream>
 #include <string>
-#include <windows.h>   // For Sleep()
+#include <windows.h> // For Sleep()
 
 using namespace std;
 
