@@ -1028,42 +1028,7 @@ class ProductList {
 
 // Task 1
 
-#include <iostream>
-#include <string>
-using namespace std;
 
-// Function to safely get an integer from user
-int getSafeInt(string prompt) {
-    int input;
-
-    while (true) {
-        cout << prompt;
-
-        if (cin >> input) {
-            // Valid integer entered
-            return input;
-        } else {
-            // Invalid input handling
-            cin.clear();                 // Reset error flags
-            cin.ignore(10000, '\n');     // Remove invalid input
-            cout << "### Oops! Numbers only. Try again. ###\n";
-        }
-    }
-}
-
-int main() {
-    cout << "------------------------------\n";
-    cout << "  Safe Input Demonstration\n";
-    cout << "------------------------------\n";
-
-    int age = getSafeInt("Enter your age: ");
-    cout << "You entered age: " << age << endl;
-
-    cout << "------------------------------\n";
-    cout << "Program ended safely.\n";
-
-    return 0;
-}
 
 //Task 2
 
