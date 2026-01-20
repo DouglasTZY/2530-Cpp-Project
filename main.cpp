@@ -1,3 +1,9 @@
+// Douglas Tan Tze Yu 1221206532 
+// Joel Nithyananthan Paramananthan 1211205630 
+// Chua Rui Cheng 1221207214 
+// RS6 
+// Data Structure and Algorithm Project - Stationery Shop Management System 
+
 #include <iostream> 
 #include <fstream> 
 #include <cstring> 
@@ -13,12 +19,13 @@ using namespace std;
 #endif 
 
 // ===== AUDIT LOG SYSTEM =====
-//testing...
-//testing...
-//testing...
-//testing...
-//testing...
-//testing... 34
+// testing...
+// testing...
+// testing...
+// testing...
+// testing...
+// testing... 34
+
 // Writes action to log.txt with timestamp and username
 void writeLog(const char* action, const char* username = "unknown") {
     ofstream log("log.txt", ios::app);
@@ -1025,111 +1032,6 @@ class ProductList {
 
     public:
 }; 
-
-
-
-#include <iostream>
-#include <string>
-using namespace std;
-
-// Function to safely get an integer from user
-int getSafeInt(string prompt) {
-    int input;
-
-    while (true) {
-        cout << prompt;
-
-        if (cin >> input) {
-            // Valid integer entered
-            return input;
-             } else {
-            // Invalid input handling
-
-                        cin.clear();              // Reset error flags
-                        cin.ignore(10000, '\n');     // Remove invalid input
-            cout << "### Oops! Numbers only. Try again. ###\n";
-        }
-    }
-}
-
-int main() {
-    cout << "------------------------------\n";
-    cout << "  Safe Input Demonstration\n";
-    cout << "------------------------------\n";
-
-    int age = getSafeInt("Enter your age: ");
-    cout << "You entered age: " << age << endl;
-
-    cout << "------------------------------\n";
-    cout << "Program ended safely.\n";
-
-    return 0;
-}
-
-
-
-#include <iostream>
-#include <string>
-#include <windows.h> // For Sleep()
-
-using namespace std;
-
-// Function to show loading animation
-void showLoadingBar(string message) 
-{
-    cout << message;
-
-    for (int i = 0; i < 6; i++) 
-	{
-        cout << "#";
-        Sleep(250); // Pause for 250 milliseconds
-    }
-
-    cout << " COMPLETED!" << endl;
-}
-
-int main() 
-{
-    cout << "-----------------------------\n";
-    cout << "   File Processing System\n";
-    cout << "-----------------------------\n";
-
-    showLoadingBar("Saving data ");
-    showLoadingBar("Loading records ");
-
-    cout << "-----------------------------\n";
-    cout << "All tasks finished successfully.\n";
-
-    return 0;
-}
-
-
-
-#include <iostream>
-#include <cstdlib>   // For system("cls")
-
-using namespace std;
-
-// Function to display boxed main menu
-void showBoxedMenu() {
-    system("cls"); // Clear console screen (Windows)
-
-    cout << "--------------------------------------------\n";
-    cout << "|        SMART INVENTORY CONSOLE           |\n";
-    cout << "--------------------------------------------\n";
-    cout << "|  1. Administrator Access                |\n";
-    cout << "|  2. Browse Products                     |\n";
-    cout << "|  3. Quit Program                        |\n";
-    cout << "--------------------------------------------\n";
-}
-
-int main() {
-    showBoxedMenu();
-
-    return 0;
-}
-
-
 
 // ===== BINARY SEARCH IMPLEMENTATION =====
 
