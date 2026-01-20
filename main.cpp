@@ -1069,7 +1069,6 @@ int main() {
 
 
 
-
 //Task 2
 
 #include <iostream>
