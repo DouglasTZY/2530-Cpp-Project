@@ -1,0 +1,28 @@
+===================================================================
+APPENDIX: AI TOOL USAGE DISCLOSURE
+===================================================================
+
+Student Declaration:
+We hereby declare that Artificial Intelligence (AI) tools were used to assist in specific parts of this project's development. In accordance with the project guidelines, we have reviewed, modified, and integrated all AI-generated suggestions to ensure they meet the specific requirements of our system.
+
+1. AI Tools Used:
+   - ChatGPT (OpenAI)
+
+2. Specific Areas of AI Assistance:
+   a) Data Structures (Base Implementation):
+      - We used AI to generate the initial skeleton code for the `ProductList` (Linked List) and `TransactionQueue` (Linked Queue) classes to ensure proper memory management and pointer handling.
+   
+   b) Algorithms (Standard Logic):
+      - The `quickSort` and `binarySearch` algorithms were adapted from AI-generated examples of standard implementations.
+
+   c) Error Handling Pattern:
+      - The consistent `try-catch` block structure used across our file I/O operations was suggested by AI to improve system robustness.
+
+3. Student Contribution & Modification (Originality):
+   - Integration: While AI provided the data structure "containers", we manually wrote the logic to connect these containers to our `Staff` and `Customer` modules (e.g., passing the `plist` object between classes).
+   - Business Logic: The core business rules (purchase validation, stock deductions, login authentication flows) were written and logic-checked by the group members.
+   - Adaptation: We modified the generic AI code to specifically handle our `Product` and `QueueNode` structs, changing variable names and logic to match our specific file formats (product.txt, etc.).
+   - Debugging: We manually tested and fixed issues where the AI-generated code did not perfectly align with our module headers.
+
+4. Conclusion:
+   The use of AI was limited to "Boilerplate Generation" and "Algorithm Reference". The final system integration, logic flow, and testing were conducted by the team to demonstrate our understanding of the course material.
