@@ -13,14 +13,14 @@
 #include <cmath>
 using namespace std;
 
-// UTF-8 Support for Windows
+// Windows compatibility
 #ifdef _WIN32
 #include <windows.h>
 #endif 
 
 // ===== AUDIT LOG SYSTEM ===== 
 
-// Writes action to log.txt with timestamp and username
+// write to log file
 void writeLog(const char* action, const char* username = "unknown") {
     ofstream log("log.txt", ios::app);
     if(!log) {
@@ -40,7 +40,7 @@ void writeLog(const char* action, const char* username = "unknown") {
     log.close();
 }
 
-// Logs action with product ID
+// log with id
 void writeLogWithID(const char* action, int id, const char* username = "unknown") {
     ofstream log("log.txt", ios::app);
     if(!log) {
@@ -60,7 +60,7 @@ void writeLogWithID(const char* action, int id, const char* username = "unknown"
     log.close();
 }
 
-// Logs action with full product details (name, price, quantity)
+// log product details
 void writeLogWithProduct(const char* action, const char* productName, double price, int qty, const char* username = "unknown") {
     ofstream log("log.txt", ios::app);
     if(!log) {
@@ -81,7 +81,7 @@ void writeLogWithProduct(const char* action, const char* productName, double pri
     log.close();
 }
 
-// Logs customer purchase transactions
+// log purchase info
 void writeLogPurchase(const char* customerName, const char* productName, int qty, double totalPrice, const char* username = "unknown") {
     ofstream log("log.txt", ios::app);
     if(!log) {
@@ -106,17 +106,17 @@ void writeLogPurchase(const char* customerName, const char* productName, int qty
 
 // ===== UTILS / HELPER CLASS =====
 
-// Utility class for UI, input validation, and user interaction
+// Helper class for UI stuff
 class Utils {
 public:
-    // Pauses execution until user presses Enter
+    // pause program
     static void pause() {
         cout << "\nPress Enter to continue...";
         cin.ignore(1000, '\n');
         cin.get();
     }
     
-    // Clears console screen (Windows/Linux compatible)
+    // clear the screen
     static void clearScreen() {
         #ifdef _WIN32
             system("cls");
@@ -125,7 +125,7 @@ public:
         #endif
     }
     
-    // Prompts user for Yes/No confirmation
+    // ask for confirmation
     static bool confirmAction() {
         char response;
         cout << "\nAre you sure? (Y/N): ";
@@ -135,7 +135,7 @@ public:
         return (response == 'Y' || response == 'y');
     }
     
-    // Prompts user with custom confirmation message
+    // custom confirmation message
     static bool confirmAction(const char* message) {
         char response;
         cout << "\n" << message << " (Y/N): ";
@@ -145,12 +145,12 @@ public:
         return (response == 'Y' || response == 'y');
     }
     
-    // Prints standard line separator (37 equals signs)
+    // print a line
     static void printLine() {
         cout << "=====================================\n";
     }
     
-    // Prints line separator with custom length
+    // print line with specific length
     static void printLine(int length) {
         for(int i = 0; i < length; i++) {
             cout << "=";
@@ -158,7 +158,7 @@ public:
         cout << "\n";
     }
     
-    // Prints formatted header with title
+    // show header
     static void printHeader(const char* title) {
         Utils::clearScreen();
         Utils::printLine();
@@ -166,7 +166,7 @@ public:
         Utils::printLine();
     }
     
-    // Displays status message with [OK] or [✗ ERROR] prefix
+    // show status message
     static void printStatus(const char* message, bool isSuccess = true) {
         if(isSuccess) {
             cout << "\n[OK] " << message << endl;
@@ -175,12 +175,12 @@ public:
         }
     }
     
-    // Displays warning message with [!] prefix
+    // show warning
     static void printWarning(const char* message) {
         cout << "\n[!] " << message << endl;
     }
     
-    // Prints menu divider (37 hyphens)
+    // menu divider
     static void printDivider() {
         cout << "-------------------------------------\n";
     }
@@ -189,7 +189,7 @@ public:
         return Utils::confirmAction("Do you want to proceed?");
     }
     
-    // Prompts for positive integer with validation
+    // get positive int input
     static int getPositiveInteger(const char* prompt) {
         int value;
         bool valid = false;
@@ -220,7 +220,7 @@ public:
         return value;
     }
     
-    // Prompts for positive double with validation
+    // get positive double input
     static double getPositiveDouble(const char* prompt) {
         double value;
         bool valid = false;
@@ -376,7 +376,7 @@ public:
 };
 
 
-// Product data structure
+// Product struct
 struct Product {
 	int id; 
 	char name[50]; 
@@ -384,13 +384,13 @@ struct Product {
 	int quantity; 
 }; 
 
-// Linked list node
+// Node for linked list
 struct Node {
 	Product data; 
 	Node* next; 
 }; 
 
-// Manages product inventory using singly-linked list
+// Linked list for products
 class ProductList {
     private: 
         Node* head; 
@@ -400,13 +400,13 @@ class ProductList {
             head = NULL; 
         }
 
-        // Friend Function Declarations
+        // Friend functions
         friend double calculateTotalStockValue(ProductList& plist);
         friend int getTotalStockCount(ProductList& plist);
         friend void debugInventoryStructure(ProductList& plist);
         friend bool isInventoryHealthy(ProductList& plist);    
 
-        // Frees all nodes to prevent memory leaks
+        // clean up memory
         ~ProductList() {
             Node* temp; 
             while(head != NULL) {
@@ -416,7 +416,7 @@ class ProductList {
             } 
         } 
 
-        // Adds product to end of list
+        // add new product
         void addProduct(Product p) {
             Node* newNode = new Node; 
             newNode->data = p; 
@@ -433,7 +433,7 @@ class ProductList {
             }
         } 
 
-        // Displays all products in table format
+        // show all products
         void displayProducts() {
             Node* cur = head; 
             if(cur == NULL) {
@@ -451,7 +451,7 @@ class ProductList {
             }
         } 
 
-        // Sorts products by price using bubble sort (O(n²))
+        // bubble sort by price
         void sortByPrice() {
             if(head == NULL || head->next == NULL) {
                 return; 
@@ -478,7 +478,7 @@ class ProductList {
             } while(swapped); 
         } 
 
-        // Searches and displays product by ID
+        // search by id
         bool searchByID(int targetID) {
             Node* cur = head; 
 
@@ -500,7 +500,7 @@ class ProductList {
             return false; 
         }
         
-        // Checks if product ID exists (no output)
+        // check if id exists
         bool searchByIDExists(int targetID) {
             Node* cur = head;
             
@@ -514,7 +514,7 @@ class ProductList {
             return false;
         }
         
-        // Returns product quantity by ID (-1 if not found)
+        // get quantity
         int getProductQuantity(int targetID) {
             Node* cur = head;
             
@@ -528,7 +528,7 @@ class ProductList {
             return -1;  // Product not found
         }
         
-        // Returns product price by ID (-1.0 if not found)
+        // get price
         double getProductPrice(int targetID) {
             Node* cur = head;
             
@@ -542,7 +542,7 @@ class ProductList {
             return -1.0;  // Product not found
         }
 
-        // Processes purchase, updates inventory and files
+        // buy product
         bool purchaseProduct(int productID, int quantity, const char* customerName = "unknown") {
             Node* cur = head; 
 
@@ -610,7 +610,7 @@ class ProductList {
             return false; 
         } 
 
-        // Deletes product by ID
+        // delete product
         bool deleteProduct(int productID) {
             if(head == NULL) {
                 cout << "No products to delete.\n"; 
@@ -653,7 +653,7 @@ class ProductList {
             return true; 
         } 
  
-        // Saves all products to product.txt
+        // save to file
         void saveToFile() {
             try {
                 ofstream outFile("product.txt"); 
@@ -676,7 +676,7 @@ class ProductList {
             }
         } 
 
-        // Loads products from product.txt into list
+        // load from file
         void loadFromFile() {
             try {
                 ifstream inFile("product.txt"); 
@@ -700,7 +700,7 @@ class ProductList {
 
         // ===== PRODUCT MODULE EXTENSION =====
 
-        // Updates product price by ID with validation
+        // update price
         bool updateProductPrice(int id) {
             if(head == NULL) {
                 cout << "No products available.\n"; 
@@ -749,7 +749,7 @@ class ProductList {
             return true; 
         } 
 
-        // Updates product quantity by ID with validation
+        // update quantity
         bool updateProductQuantity(int id) {
             if(head == NULL) {
                 cout << "No products available.\n"; 
@@ -1600,28 +1600,10 @@ bool isInventoryHealthy(ProductList& plist) {
 
 // ===== VALIDATION & EXCEPTION HANDLING =====
 
-/*
-  Class: ValidationHelper
-  Description: Provides static validation and error-checking methods for the system
-  Features:
-    - Username existence checking
-    - Product availability validation
-    - Purchase quantity validation
-    - File integrity checks
-    - Data range validation
-  Design Pattern: Static utility class for validation logic
-*/
+// Validation helper class to check stuff
 class ValidationHelper {
 public:
-    /*
-      Function: isUsernameExists
-      Purpose: Checks if a username already exists in the user file
-      Parameters:
-        - filename: Path to the user file (staff.txt or customer.txt)
-        - username: Username to check for duplicates
-      Returns: true if username exists, false if available
-      Side Effect: Logs failed registration attempts
-    */
+    // check if username exists in file
     static bool isUsernameExists(const char* filename, const char* username) {
         try {
             ifstream inFile(filename);
@@ -1654,31 +1636,14 @@ public:
         }
     }
     
-    /*
-      Function: isProductIDExists
-      Purpose: Checks if a product ID exists in the inventory
-      Parameters:
-        - plist: Reference to the ProductList
-        - productID: ID to search for
-      Returns: true if product exists, false otherwise
-      Usage: For purchase validation
-    */
+    // check if product id exists
     static bool isProductIDExists(ProductList& plist, int productID) {
         // This method assumes ProductList has a searchByID method
         // We'll search through the list
         return plist.searchByIDExists(productID);
     }
     
-    /*
-      Function: isPurchaseQuantityValid
-      Purpose: Validates a purchase quantity against inventory and reasonable limits
-      Parameters:
-        - plist: Reference to the ProductList
-        - productID: ID of product to purchase
-        - quantity: Quantity requested to purchase
-      Returns: true if quantity is valid, false otherwise
-      Checks: Positive quantity, reasonable limit (max 9999), sufficient stock
-    */
+    // check if purchase quantity is valid
     static bool isPurchaseQuantityValid(ProductList& plist, int productID, int quantity) {
         try {
             if(quantity <= 0) {
@@ -1717,14 +1682,7 @@ public:
         }
     }
     
-    /*
-      Function: isFileEmpty
-      Purpose: Checks if a file exists and is empty
-      Parameters:
-        - filename: Path to the file to check
-      Returns: true if file is empty or doesn't exist, false if has content
-      Usage: For system startup validation
-    */
+    // check if file is empty
     static bool isFileEmpty(const char* filename) {
         try {
             ifstream inFile(filename);
@@ -1749,14 +1707,7 @@ public:
         }
     }
     
-    /*
-      Function: getProductCountInFile
-      Purpose: Counts the number of product lines in a file
-      Parameters:
-        - filename: Path to the product file
-      Returns: Number of products in file, or 0 if empty/error
-      Usage: System startup inventory report
-    */
+    // count products in file
     static int getProductCountInFile(const char* filename) {
         try {
             ifstream inFile(filename);
@@ -1783,14 +1734,7 @@ public:
         }
     }
     
-    /*
-      Function: isProductPriceValid
-      Purpose: Validates that a product price is within acceptable range
-      Parameters:
-        - price: Price value to validate in RM
-      Returns: true if price is valid, false otherwise
-      Constraints: Must be > 0 and <= 10000 RM
-    */
+    // validate price range
     static bool isProductPriceValid(double price) {
         if(price <= 0) {
             Utils::printWarning("Price must be greater than 0!");
@@ -1805,14 +1749,7 @@ public:
         return true;
     }
     
-    /*
-      Function: isProductInventoryValid
-      Purpose: Validates that a product quantity is within acceptable range
-      Parameters:
-        - quantity: Quantity value to validate
-      Returns: true if quantity is valid, false otherwise
-      Constraints: Must be >= 0 and <= 99999 units
-    */
+    // validate inventory quantity
     static bool isProductInventoryValid(int quantity) {
         if(quantity < 0) {
             Utils::printWarning("Quantity cannot be negative!");
@@ -1827,14 +1764,7 @@ public:
         return true;
     }
     
-    /*
-      Function: getCustomerCountInFile
-      Purpose: Counts the number of user accounts in a file
-      Parameters:
-        - filename: Path to the user file (staff.txt or customer.txt)
-      Returns: Number of user accounts, or 0 if empty/error
-      Usage: System startup user account report
-    */
+    // count customers in file
     static int getCustomerCountInFile(const char* filename) {
         try {
             ifstream inFile(filename);
@@ -2024,51 +1954,29 @@ public:
     }
 };
 
-/*
-  Class: User
-  Description: Abstract base class for system users (Staff and Customer)
-  Members:
-    - username: User login name (max 30 chars)
-    - password: User password (max 30 chars)
-  Virtual Methods: Pure virtual menu() for polymorphic behavior
-  Inheritance: Base class for Staff and Customer
-*/
+// User base class
 class User {
 	protected: 
 		char username[30]; 
 		char password[30]; 
 	
 	public: 
-		/*
-		  Constructor: User
-		  Purpose: Initializes a User with empty username and password
-		*/
+		// constructor
 		User() {
 			strcpy(username, ""); 
 			strcpy(password, ""); 
 		} 
 
-		/*
-		  Destructor: ~User
-		  Purpose: Virtual destructor for proper cleanup in derived classes
-		*/
+		// virtual destructor
 		virtual ~User() {
 			// destructor 
 		} 
 
-		/*
-		  Function: menu
-		  Purpose: Pure virtual function for user interface menu
-		  Implementation: Overridden by Staff and Customer classes
-		*/
+		// virtual menu
 		virtual void menu() = 0; // pure virtual 
 };
 
-/* 
-  Class: BaseReport
-  Purpose: Abstract base class for all reporting components
-  Requirement: 2nd Base Class
-*/
+// Reporting interface
 class BaseReport {
     public:
         // Pure virtual function acting as interface
@@ -2079,41 +1987,20 @@ class BaseReport {
         }
 }; 
 
-/*
-  Class: SalesSummary
-  Description: Handles generation and analysis of sales reports and statistics
-  Members:
-    - totalSales: Cumulative sales amount in RM
-    - totalQuantity: Total units sold
-  Features:
-    - Generate sales summary report
-    - Find highest/lowest selling products
-    - Calculate average transaction values
-    - Generate daily sales summaries
-*/
+// Sales stats class
 class SalesSummary : public BaseReport {
     private: 
         float totalSales; 
         int totalQuantity; 
     
     public: 
-        /*
-          Constructor: SalesSummary
-          Purpose: Initializes sales summary with zero totals
-        */
+        // constructor
         SalesSummary() { 
             totalSales = 0; 
             totalQuantity = 0; 
         } 
         
-        /*
-          Function: generateReport
-          Purpose: Generates a sales summary report and saves to summary.txt
-          Parameters:
-            - staffName: Name of staff member generating report
-          Output File: summary.txt with total quantity and sales amount
-          Side Effects: Writes summary.txt, logs action
-        */
+        // make sales report
         void generateReport(const char* staffName = "unknown") {
             try {
                 ifstream inFile("purchase.txt"); 
@@ -2150,14 +2037,7 @@ class SalesSummary : public BaseReport {
             }
         }
         
-        /*
-          Function: getHighestSalesProduct
-          Purpose: Identifies the product with highest total sales value
-          Parameters:
-            - staffName: Name of staff member requesting report
-          Output: Product name and total sales amount
-          Algorithm: Single pass through purchase file tracking maximum
-        */
+        // find best seller
         void getHighestSalesProduct(const char* staffName = "unknown") {
             try {
                 ifstream inFile("purchase.txt");
@@ -2191,14 +2071,7 @@ class SalesSummary : public BaseReport {
             }
         }
         
-        /*
-          Function: getLowestSalesProduct
-          Purpose: Identifies the product with lowest total sales value
-          Parameters:
-            - staffName: Name of staff member requesting report
-          Output: Product name and total sales amount
-          Algorithm: Single pass through purchase file tracking minimum
-        */
+        // find worst seller
         void getLowestSalesProduct(const char* staffName = "unknown") {
             try {
                 ifstream inFile("purchase.txt");
@@ -2234,16 +2107,7 @@ class SalesSummary : public BaseReport {
             }
         }
         
-        /*
-          Function: getAverageSalesPerTransaction
-          Purpose: Calculates average sales value per transaction
-          Parameters:
-            - staffName: Name of staff member requesting report
-          Metrics Displayed:
-            - Total transactions
-            - Total sales amount
-            - Average per transaction
-        */
+        // calc avg sales
         void getAverageSalesPerTransaction(const char* staffName = "unknown") {
             try {
                 ifstream inFile("purchase.txt");
@@ -2277,15 +2141,7 @@ class SalesSummary : public BaseReport {
             }
         }
         
-        /*
-          Function: generateDailySummary
-          Purpose: Generates daily sales summary with simulated dates
-          Parameters:
-            - staffName: Name of staff member generating report
-          Output File: daily_summary.txt
-          Simulation: Groups 3 transactions per day
-          Usage: For trend analysis and daily performance tracking
-        */
+        // daily summary
         void generateDailySummary(const char* staffName = "unknown") {
             try {
                 ifstream inFile("purchase.txt");
@@ -2353,48 +2209,17 @@ class SalesSummary : public BaseReport {
         }
 }; 
 
-/*
-  Class: Staff
-  Description: Staff user interface and management class
-  Inheritance: Extends User base class
-  Static Members:
-    - plist: Shared ProductList instance for all staff
-  Responsibilities:
-    - Staff login/registration
-    - Product management (add, delete, update)
-    - Sales analysis and reporting
-    - Audit logging
-*/
+// Staff class
 class Staff : public User { 
     public: 
-        static ProductList plist; // all staff can use 
-		/*
-		  Constructor: Staff
-		  Purpose: Initializes a Staff user instance
-		*/
+        static ProductList plist; // shared product list 
+		// constructor
 		Staff() {}
 		
-		/*
-		  Destructor: ~Staff
-		  Purpose: Cleans up Staff instance
-		*/
-		/*
-		  Destructor: ~Staff
-		  Purpose: Cleans up Staff instance
-		*/
+		// destructor
 		~Staff() {}
 
-		/*
-		  Function: menu
-		  Purpose: Displays staff user interface with login, registration, and product management
-		  Features:
-		    - Login/Register
-		    - Add/Delete products
-		    - Search and sort products
-		    - View sales summaries
-		    - Highest/Lowest product analysis
-		    - Daily sales reports
-		*/
+		// staff menu
 		void menu() {
 			int choice; 
             Product p; 
@@ -2634,14 +2459,7 @@ class Staff : public User {
             } while(choice != 0);
         } 
 
-        /*
-          Function: login
-          Purpose: Authenticates a staff user against credentials in file
-          Parameters:
-            - filename: Path to staff.txt with username/password pairs
-          Returns: true if login successful, false otherwise
-          Side Effects: Sets username/password members, logs action
-        */
+        // staff login
         bool login(const char* filename) {
             try {
                 char userName[30], passWord[30]; 
@@ -2683,15 +2501,7 @@ class Staff : public User {
             }
         } 
 
-        /*
-          Function: registerUser
-          Purpose: Registers a new staff account with username and password
-          Parameters:
-            - filename: Path to staff.txt to save new account
-          Returns: true if registration successful, false otherwise
-          Validation: Checks for duplicate usernames
-          Side Effects: Appends to staff.txt, logs action
-        */
+        // staff registration
         bool registerUser(const char* filename) {
             try {
                 char userName[30], passWord[30];
@@ -2728,16 +2538,7 @@ class Staff : public User {
         }
 }; 
 
-/*
-  Class: Customer
-  Description: Customer user interface and shopping functionality
-  Inheritance: Extends User base class
-  Responsibilities:
-    - Customer login/registration
-    - Product browsing and searching
-    - Purchase transactions
-    - Purchase history tracking
-*/
+// Customer class
 
 // ===== THIRD DERIVED CLASS - INVENTORY MANAGER =====
 
@@ -3135,29 +2936,10 @@ ProductList Staff::plist;
 
 // ===== CUSTOMER PURCHASE HISTORY CLASS =====
 
-/*
-  Class: PurchaseHistory
-  Description: Manages and displays customer purchase history and statistics
-  Inner Struct:
-    - Purchase: Contains customer name, product ID, name, quantity, price
-  Features:
-    - View personal purchase history
-    - View all purchases (staff only)
-    - Customer statistics and analysis
-    - Search purchases by product
-*/
+// Purchase history class
 class PurchaseHistory {
     private:
-        /*
-          Struct: Purchase
-          Description: Represents a single purchase transaction
-          Members:
-            - customerName: Customer who made the purchase
-            - productID: ID of purchased product
-            - productName: Name of purchased product
-            - quantity: Quantity of units purchased
-            - price: Unit price at time of purchase
-        */
+        // Purchase details
         struct Purchase {
             char customerName[50];
             int productID;
@@ -3167,34 +2949,17 @@ class PurchaseHistory {
         };
 
     public:
-        /*
-          Constructor: PurchaseHistory
-          Purpose: Initializes a PurchaseHistory instance
-        */
+        // constructor
         PurchaseHistory() {
             // Constructor
         }
 
-        /*
-          Destructor: ~PurchaseHistory
-          Purpose: Cleans up PurchaseHistory instance
-        */
+        // destructor
         ~PurchaseHistory() {
             // Destructor
         }
 
-        /*
-          Function: viewMyPurchases
-          Purpose: Displays purchase history for a specific customer
-          Parameters:
-            - username: Name of customer to display history for
-          Output: Table of purchases with totals and statistics
-          Statistics:
-            - Total purchases
-            - Total items bought
-            - Total amount spent
-            - Average spending per purchase
-        */
+        // view my history
         void viewMyPurchases(char username[]) {
             if(strlen(username) == 0) {
                 cout << "Invalid username.\n";
@@ -3268,16 +3033,7 @@ class PurchaseHistory {
             }
         }
 
-        /*
-          Function: viewAllPurchases
-          Purpose: Displays all purchase transactions (staff view only)
-          Output: Complete transaction history with all customers
-          Statistics:
-            - Total transaction records
-            - Total items sold
-            - Total revenue
-            - Average transaction value
-        */
+        // view all history (admin)
         void viewAllPurchases() {
             try {
                 ifstream purchaseFile("purchase.txt");
@@ -3339,16 +3095,7 @@ class PurchaseHistory {
             }
         }
 
-        /*
-          Function: displayCustomerStatistics
-          Purpose: Displays aggregated statistics by customer
-          Output: Per-customer metrics including purchases, spending, averages
-          Calculations:
-            - Unique customer count
-            - Total revenue
-            - Average customer value
-          Usage: For customer relationship management
-        */
+        // customer stats
         void displayCustomerStatistics() {
             try {
                 ifstream purchaseFile("purchase.txt");
@@ -3436,17 +3183,7 @@ class PurchaseHistory {
             }
         }
 
-        /*
-          Function: searchPurchaseByProduct
-          Purpose: Finds all purchases of a specific product
-          Parameters:
-            - productID: Product ID to search for
-          Output: List of customers who purchased this product
-          Statistics:
-            - Total records for product
-            - Total quantity sold
-            - Total revenue from product
-        */
+        // search by product
         void searchPurchaseByProduct(int productID) {
             try {
                 ifstream purchaseFile("purchase.txt");
@@ -3507,20 +3244,9 @@ class PurchaseHistory {
         }
 };
 
-/*
-  Function: main
-  Purpose: Entry point for the Stationery Shop Management System
-  Initialization:
-    - Loads products from product.txt
-    - Validates system files at startup
-    - Displays file status report
-  Main Loop:
-    - Shows main menu with Staff/Customer/Exit options
-    - Creates user objects based on selection
-    - Calls menu() method for user interaction
-  Flow Control: Continues until user selects Exit (choice 0)
-*/
+// main function
 int main() { 
+    system("color 09");
     Staff::plist.loadFromFile();
     
     // ===== VALIDATION 4: Check if important files are empty at startup =====
