@@ -2753,6 +2753,8 @@ class Customer : public User {
         bool registerUser(const char* filename) {
             try {
                 char userName[30], passWord[30]; 
+                
+                cout << "New Username: ";
                 cin >> userName;
                 
                 // ===== VALIDATION 1: Check if username already exists =====
