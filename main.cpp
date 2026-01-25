@@ -2343,7 +2343,7 @@ class Staff : public User {
 
                     case 2:
                         Utils::printHeader("PRODUCT LIST");
-                        cout << "Display Products (coming soon)\n";
+                        plist.displayProducts();
                         writeLog("DISPLAY PRODUCTS", username);
                         Utils::pause();
                         break; 
@@ -2754,6 +2754,8 @@ class Customer : public User {
         bool registerUser(const char* filename) {
             try {
                 char userName[30], passWord[30]; 
+                
+                cout << "New Username: ";
                 cin >> userName;
                 
                 // ===== VALIDATION 1: Check if username already exists =====
