@@ -2,7 +2,7 @@
 // Joel Nithyananthan Paramananthan 1211205630 
 // Chua Rui Cheng 1221207214 
 // RS6 
-// TDS4223 Data Structure and Algorithm Project  
+// TDS4223 Data Structure and Algorithm Project 
 // Title: Stationery Shop Management System 
 
 #include <iostream> 
