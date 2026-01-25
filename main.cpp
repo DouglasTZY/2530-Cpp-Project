@@ -2,7 +2,8 @@
 // Joel Nithyananthan Paramananthan 1211205630 
 // Chua Rui Cheng 1221207214 
 // RS6 
-// Data Structure and Algorithm Project - Stationery Shop Management System 
+// TDS4223 Data Structure and Algorithm Project  
+// Title: Stationery Shop Management System 
 
 #include <iostream> 
 #include <fstream> 
@@ -40,7 +41,7 @@ void writeLog(const char* action, const char* username = "unknown") {
     log.close();
 }
 
-// log with id
+// log with id 
 void writeLogWithID(const char* action, int id, const char* username = "unknown") {
     ofstream log("log.txt", ios::app);
     if(!log) {
@@ -2753,8 +2754,6 @@ class Customer : public User {
         bool registerUser(const char* filename) {
             try {
                 char userName[30], passWord[30]; 
-                
-                cout << "New Username: ";
                 cin >> userName;
                 
                 // ===== VALIDATION 1: Check if username already exists =====
