@@ -1,2 +1,3 @@
 id|product|quantity|total price
 
+24|Notebook Spiral Bound|3|21

@@ -1,1 +1,2 @@
 customerName productID productName quantity price
+alice|24|Notebook Spiral Bound|3|7

@@ -1,50 +1,50 @@
-1|Pencil HB Standard|1.50|50
-2|Pencil 2B Soft|1.50|48
-3|Pencil 4B Extra Soft|1.80|35
-4|Pencil Mechanical 0.5mm|3.50|42
-5|Pencil Mechanical 0.7mm|3.50|40
-6|Eraser Standard Rubber|0.80|100
-7|Eraser Vinyl Premium|0.90|95
-8|Eraser Electric Rechargeable|12.50|15
-9|Pen Ballpoint Blue|2.00|80
-10|Pen Ballpoint Red|2.00|75
-11|Pen Ballpoint Black|2.00|85
-12|Gel Pen 0.5mm Blue|3.50|60
-13|Gel Pen 0.5mm Red|3.50|55
-14|Gel Pen 0.7mm Black|3.50|58
-15|Highlighter Yellow|2.50|70
-16|Highlighter Pink|2.50|65
-17|Highlighter Green|2.50|60
-18|Marker Permanent Black|3.00|45
-19|Marker Permanent Red|3.00|42
-20|Marker Permanent Blue|3.00|40
-21|Notebook A4 100 Pages|8.50|30
-22|Notebook A4 200 Pages|12.00|25
-23|Notebook A5 Small|5.50|40
-24|Notebook Spiral Bound|7.00|35
-25|Notebook Grid Pattern|9.00|28
-26|Notebook Lined Ruled|6.50|38
-27|Paper Bond A4 500 Sheets|15.00|20
-28|Paper Bond A3 500 Sheets|25.00|12
-29|Paper Colored A4 100 Sheets|8.00|30
-30|Paper Glossy Photo|22.00|10
-31|Clipboard Plastic A4|4.50|50
-32|Clipboard Metal A4|8.50|35
-33|Clipboard Wooden A4|6.50|40
-34|Ruler Plastic 30cm|1.50|100
-35|Ruler Wooden 30cm|2.00|85
-36|Ruler Metal 30cm|5.50|40
-37|Compass Drawing Tool|4.50|45
-38|Protractor 180 Degree|3.00|50
-39|Pencil Case Zipper|12.00|25
-40|Pencil Case Tin Box|15.00|20
-41|Stapler Standard|8.50|30
-42|Stapler Heavy Duty|18.00|15
-43|Staples Box 1000|3.50|60
-44|Tape Transparent 24mm|2.50|80
-45|Tape Masking Paper|3.00|70
-46|Tape Double Sided|4.50|50
-47|Scissors Children Safe|3.50|45
-48|Scissors Adult Stainless|5.50|35
-49|Glue Stick 15g|1.50|100
-50|Glue Bottle 50ml|3.50|60
+1|Pencil HB Standard|1.5|50
+2|Pencil 2B Soft|1.5|48
+3|Pencil 4B Extra Soft|1.8|35
+4|Pencil Mechanical 0.5mm|3.5|42
+5|Pencil Mechanical 0.7mm|3.5|40
+6|Eraser Standard Rubber|0.8|100
+7|Eraser Vinyl Premium|0.9|95
+8|Eraser Electric Rechargeable|12.5|15
+9|Pen Ballpoint Blue|2|80
+10|Pen Ballpoint Red|2|75
+11|Pen Ballpoint Black|2|85
+12|Gel Pen 0.5mm Blue|3.5|60
+13|Gel Pen 0.5mm Red|3.5|55
+14|Gel Pen 0.7mm Black|3.5|58
+15|Highlighter Yellow|2.5|70
+16|Highlighter Pink|2.5|65
+17|Highlighter Green|2.5|60
+18|Marker Permanent Black|3|45
+19|Marker Permanent Red|3|42
+20|Marker Permanent Blue|3|40
+21|Notebook A4 100 Pages|8.5|30
+22|Notebook A4 200 Pages|12|25
+23|Notebook A5 Small|5.5|40
+24|Notebook Spiral Bound|7|32
+25|Notebook Grid Pattern|9|28
+26|Notebook Lined Ruled|6.5|38
+27|Paper Bond A4 500 Sheets|15|20
+28|Paper Bond A3 500 Sheets|25|12
+29|Paper Colored A4 100 Sheets|8|30
+30|Paper Glossy Photo|22|10
+31|Clipboard Plastic A4|4.5|50
+32|Clipboard Metal A4|8.5|35
+33|Clipboard Wooden A4|6.5|40
+34|Ruler Plastic 30cm|1.5|100
+35|Ruler Wooden 30cm|2|85
+36|Ruler Metal 30cm|5.5|40
+37|Compass Drawing Tool|4.5|45
+38|Protractor 180 Degree|3|50
+39|Pencil Case Zipper|12|25
+40|Pencil Case Tin Box|15|20
+41|Stapler Standard|8.5|30
+42|Stapler Heavy Duty|18|15
+43|Staples Box 1000|3.5|60
+44|Tape Transparent 24mm|2.5|80
+45|Tape Masking Paper|3|70
+46|Tape Double Sided|4.5|50
+47|Scissors Children Safe|3.5|45
+48|Scissors Adult Stainless|5.5|35
+49|Glue Stick 15g|1.5|100
+50|Glue Bottle 50ml|3.5|60

@@ -77,7 +77,7 @@ void writeLogWithProduct(const char* action, const char* productName, double pri
     log << "[" << timestamp << "] ";
     log << "[" << username << "] ";
     log << action << " - Product: " << productName 
-        << " (Price: RM" << price << ", Qty: " << qty << ")" << endl;
+        << " (Price: RM" << price << ", Quantity: " << qty << ")" << endl;
     
     log.close();
 }
@@ -99,7 +99,7 @@ void writeLogPurchase(const char* customerName, const char* productName, int qty
     log << "[" << username << "] ";
     log << "PURCHASE - Customer: " << customerName 
         << " | Product: " << productName 
-        << " | Qty: " << qty 
+        << " | Quantity: " << qty 
         << " | Total: RM" << totalPrice << endl;
     
     log.close();
@@ -442,7 +442,7 @@ class ProductList {
                 return; 
             } 
 
-            cout << "\nID\tName\t\tPrice\tQty\n"; 
+            cout << "\nID\tName\t\tPrice\tQuantity\n"; 
             while(cur != NULL) {
                 cout << cur->data.id << "\t"
                      << cur->data.name << "\t\t"
@@ -745,7 +745,7 @@ class ProductList {
             saveToFile(); 
 
             cout << "\n[OK] Price updated successfully!\n"; 
-            cout << "Old Price: RM " << oldPrice << " → New Price: RM " << newPrice << endl; 
+            cout << "Old Price: RM " << oldPrice << " -> New Price: RM " << newPrice << endl; 
 
             return true; 
         } 
@@ -794,7 +794,7 @@ class ProductList {
             saveToFile(); 
 
             cout << "\n[OK] Quantity updated successfully!\n"; 
-            cout << "Old Quantity: " << oldQuantity << " → New Quantity: " << newQuantity << endl; 
+            cout << "Old Quantity: " << oldQuantity << " -> New Quantity: " << newQuantity << endl; 
 
             return true; 
         } 
@@ -849,7 +849,7 @@ class ProductList {
             cout << "\n========== Products by Category ==========\n"; 
 
             cout << "\n--- Budget Products (< RM 50) ---\n"; 
-            cout << "ID\tName\t\tPrice\tQty\n"; 
+            cout << "ID\tName\t\tPrice\tQuantity\n"; 
             Node* cur = head; 
             int budgetCount = 0; 
 
@@ -868,7 +868,7 @@ class ProductList {
             } 
 
             cout << "\n--- Standard Products (RM 50 - RM 150) ---\n"; 
-            cout << "ID\tName\t\tPrice\tQty\n"; 
+            cout << "ID\tName\t\tPrice\tQuantity\n"; 
             cur = head; 
             int standardCount = 0; 
 
@@ -887,7 +887,7 @@ class ProductList {
             } 
 
             cout << "\n--- Premium Products (> RM 150) ---\n"; 
-            cout << "ID\tName\t\tPrice\tQty\n"; 
+            cout << "ID\tName\t\tPrice\tQuantity\n"; 
             cur = head; 
             int premiumCount = 0; 
 
@@ -956,7 +956,7 @@ class ProductList {
             int count = 1; 
             while(cur != NULL) {
                 cout << count << ". " << cur->data.name 
-                     << " - Qty: " << cur->data.quantity 
+                     << " - Quantity: " << cur->data.quantity 
                      << ", Value: RM " << (cur->data.price * cur->data.quantity) << endl; 
                 count++; 
                 cur = cur->next; 
@@ -970,7 +970,7 @@ class ProductList {
                 return;
             }
             head = quickSortHelper(head);
-            cout << "Products sorted by price using QuickSort algorithm.\n";
+            cout << "Products sorted by price using Quick Sort algorithm.\n";
         }
 
     private:
@@ -2012,13 +2012,19 @@ class SalesSummary : public BaseReport {
                 if(!outFile)
                     throw "Cannot open summary.txt.";
 
+                char line[200];
                 char customerName[30], productName[30]; 
                 int productID, quantity; 
                 float price; 
 
-                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
-                    totalQuantity += quantity; 
-                    totalSales += quantity * price; 
+                // Skip header line
+                inFile.getline(line, 200);
+                
+                while(inFile.getline(line, 200)) {
+                    if(sscanf(line, "%[^|]|%d|%[^|]|%d|%f", customerName, &productID, productName, &quantity, &price) == 5) {
+                        totalQuantity += quantity; 
+                        totalSales += quantity * price;
+                    }
                 } 
 
                 outFile << "===== SALES SUMMARY REPORT =====\n";
@@ -2045,17 +2051,23 @@ class SalesSummary : public BaseReport {
                 if(!inFile)
                     throw "Cannot open purchase.txt.";
                 
+                char line[200];
                 char customerName[30], productName[30];
                 char highestProduct[30] = "None";
                 int productID, quantity;
                 float price;
                 float highestSales = 0;
                 
-                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
-                    float currentSales = quantity * price;
-                    if(currentSales > highestSales) {
-                        highestSales = currentSales;
-                        strcpy(highestProduct, productName);
+                // Skip header line
+                inFile.getline(line, 200);
+                
+                while(inFile.getline(line, 200)) {
+                    if(sscanf(line, "%[^|]|%d|%[^|]|%d|%f", customerName, &productID, productName, &quantity, &price) == 5) {
+                        float currentSales = quantity * price;
+                        if(currentSales > highestSales) {
+                            highestSales = currentSales;
+                            strcpy(highestProduct, productName);
+                        }
                     }
                 }
                 
@@ -2079,6 +2091,7 @@ class SalesSummary : public BaseReport {
                 if(!inFile)
                     throw "Cannot open purchase.txt.";
                 
+                char line[200];
                 char customerName[30], productName[30];
                 char lowestProduct[30] = "None";
                 int productID, quantity;
@@ -2086,12 +2099,17 @@ class SalesSummary : public BaseReport {
                 float lowestSales = 999999999;
                 bool firstRecord = true;
                 
-                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
-                    float currentSales = quantity * price;
-                    if(firstRecord || currentSales < lowestSales) {
-                        lowestSales = currentSales;
-                        strcpy(lowestProduct, productName);
-                        firstRecord = false;
+                // Skip header line
+                inFile.getline(line, 200);
+                
+                while(inFile.getline(line, 200)) {
+                    if(sscanf(line, "%[^|]|%d|%[^|]|%d|%f", customerName, &productID, productName, &quantity, &price) == 5) {
+                        float currentSales = quantity * price;
+                        if(firstRecord || currentSales < lowestSales) {
+                            lowestSales = currentSales;
+                            strcpy(lowestProduct, productName);
+                            firstRecord = false;
+                        }
                     }
                 }
                 
@@ -2115,15 +2133,21 @@ class SalesSummary : public BaseReport {
                 if(!inFile)
                     throw "Cannot open purchase.txt.";
                 
+                char line[200];
                 char customerName[30], productName[30];
                 int productID, quantity;
                 float price;
                 float totalSales = 0;
                 int transactionCount = 0;
                 
-                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
-                    totalSales += quantity * price;
-                    transactionCount++;
+                // Skip header line
+                inFile.getline(line, 200);
+                
+                while(inFile.getline(line, 200)) {
+                    if(sscanf(line, "%[^|]|%d|%[^|]|%d|%f", customerName, &productID, productName, &quantity, &price) == 5) {
+                        totalSales += quantity * price;
+                        transactionCount++;
+                    }
                 }
                 
                 inFile.close();
@@ -2153,6 +2177,7 @@ class SalesSummary : public BaseReport {
                 if(!outFile)
                     throw "Cannot open daily_summary.txt.";
                 
+                char line[200];
                 char customerName[30], productName[30];
                 int productID, quantity;
                 float price;
@@ -2163,24 +2188,29 @@ class SalesSummary : public BaseReport {
                 outFile << "===== DAILY SALES SUMMARY REPORT =====\n";
                 outFile << "Generated on: 2025-12-28\n\n";
                 
-                while(inFile >> customerName >> productID >> productName >> quantity >> price) {
-                    transactionCounter++;
-                    float transactionAmount = quantity * price;
-                    dailySalesAmount += transactionAmount;
-                    
-                    // Every 3 transactions = 1 day (simulated)
-                    if(transactionCounter % 3 == 0) {
-                        char fakeDate[20];
-                        sprintf(fakeDate, "2025-12-%02d", (dayCounter % 28) + 1);
+                // Skip header line
+                inFile.getline(line, 200);
+                
+                while(inFile.getline(line, 200)) {
+                    if(sscanf(line, "%[^|]|%d|%[^|]|%d|%f", customerName, &productID, productName, &quantity, &price) == 5) {
+                        transactionCounter++;
+                        float transactionAmount = quantity * price;
+                        dailySalesAmount += transactionAmount;
                         
-                        outFile << "--- " << fakeDate << " ---\n";
-                        outFile << "Transactions: " << (transactionCounter % 3 == 0 ? 3 : transactionCounter % 3) << endl;
-                        outFile << "Daily Sales: RM " << dailySalesAmount << endl;
-                        outFile << "Product: " << productName << " (Qty: " << quantity << ")\n";
-                        outFile << "\n";
-                        
-                        dailySalesAmount = 0;
-                        dayCounter++;
+                        // Every 3 transactions = 1 day (simulated)
+                        if(transactionCounter % 3 == 0) {
+                            char fakeDate[20];
+                            sprintf(fakeDate, "2025-12-%02d", (dayCounter % 28) + 1);
+                            
+                            outFile << "--- " << fakeDate << " ---\n";
+                            outFile << "Transactions: " << (transactionCounter % 3 == 0 ? 3 : transactionCounter % 3) << endl;
+                            outFile << "Daily Sales: RM " << dailySalesAmount << endl;
+                            outFile << "Product: " << productName << " (Quantity: " << quantity << ")\n";
+                            outFile << "\n";
+                            
+                            dailySalesAmount = 0;
+                            dayCounter++;
+                        }
                     }
                 }
                 
@@ -2276,7 +2306,7 @@ class Staff : public User {
                 cout << "10. Generate Daily Summary\n";
                 cout << "11. Update Product Price\n";
                 cout << "12. Update Product Quantity\n";
-                cout << "13. Sort by QuickSort Algorithm\n";
+                cout << "13. Sort by Quick Sort Algorithm\n";
                 cout << "14. Check Low Stock\n";
                 cout << "15. Product Statistics\n";
                 cout << "0. Logout\n";
@@ -2428,11 +2458,11 @@ class Staff : public User {
                         break;
                     }
                     case 13: {
-                        Utils::printHeader("SORT PRODUCTS (QUICKSORT)");
-                        cout << "Sorting products using QuickSort algorithm...\n";
+                        Utils::printHeader("SORT PRODUCTS (QUICK SORT)");
+                        cout << "Sorting products using Quick Sort algorithm...\n";
                         plist.quickSortByPrice();
-                        Utils::printStatus("Products sorted successfully using QuickSort!", true);
-                        writeLog("SORT PRODUCTS USING QUICKSORT", username);
+                        Utils::printStatus("Products sorted successfully using Quick Sort!", true);
+                        writeLog("SORT PRODUCTS USING QUICK SORT", username);
                         Utils::pause();
                         break;
                     }
