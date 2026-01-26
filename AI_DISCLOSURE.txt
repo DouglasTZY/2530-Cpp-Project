@@ -1,28 +1,29 @@
-===================================================================
-APPENDIX: AI TOOL USAGE DISCLOSURE
-===================================================================
+AI Tool Usage Disclosure
 
 Student Declaration:
-We hereby declare that Artificial Intelligence (AI) tools were used to assist in specific parts of this project's development. In accordance with the project guidelines, we have reviewed, modified, and integrated all AI-generated suggestions to ensure they meet the specific requirements of our system.
+We used AI tools to help us build some parts of this project. Even though we got some help from AI, we made sure to check everything and change the code so it fits our project's specific needs.
 
-1. AI Tools Used:
-   - ChatGPT (OpenAI)
+1. Which AI tool did we use?
+   - ChatGPT
 
-2. Specific Areas of AI Assistance:
-   a) Data Structures (Base Implementation):
-      - We used AI to generate the initial skeleton code for the `ProductList` (Linked List) and `TransactionQueue` (Linked Queue) classes to ensure proper memory management and pointer handling.
-   
-   b) Algorithms (Standard Logic):
-      - The `quickSort` and `binarySearch` algorithms were adapted from AI-generated examples of standard implementations.
+2. Where did we get help from AI?
+   a) Basic Data Structures:
+      - We used ChatGPT to get a basic "skeleton" or starting code for our ProductList (Linked List) and TransactionQueue classes. This really helped us make sure we were handling pointers and memory management correctly from the start.
 
-   c) Error Handling Pattern:
-      - The consistent `try-catch` block structure used across our file I/O operations was suggested by AI to improve system robustness.
+   b) Sorting and Searching:
+      - For things like sorting our products and searching through them, we looked at AI-generated examples of QuickSort and Binary Search. Then we adapted those examples to work with our own code.
 
-3. Student Contribution & Modification (Originality):
-   - Integration: While AI provided the data structure "containers", we manually wrote the logic to connect these containers to our `Staff` and `Customer` modules (e.g., passing the `plist` object between classes).
-   - Business Logic: The core business rules (purchase validation, stock deductions, login authentication flows) were written and logic-checked by the group members.
-   - Adaptation: We modified the generic AI code to specifically handle our `Product` and `QueueNode` structs, changing variable names and logic to match our specific file formats (product.txt, etc.).
-   - Debugging: We manually tested and fixed issues where the AI-generated code did not perfectly align with our module headers.
+   c) Handling Errors:
+      - The way we used try-catch blocks to handle file reading and writing errors was based on patterns suggested by the AI to make our program more stable.
 
-4. Conclusion:
-   The use of AI was limited to "Boilerplate Generation" and "Algorithm Reference". The final system integration, logic flow, and testing were conducted by the team to demonstrate our understanding of the course material.
+3. Our Own Work and What We Changed:
+   - Putting it all together: Even though the AI gave us the basic structure for some classes, we had to write all the logic ourselves to connect everything. We manually wrote the code to pass data between the Staff and Customer modules.
+
+   - Business Rules: All the actual rules for our system—like checking if someone can buy something, updating the stock after a sale, and the login process—were written and tested by us.
+
+   - Customizing the code: We didn't just copy-paste. We had to change the generic AI code to use our own structs (like Product and QueueNode) and renamed a lot of variables to match our file names (like product.txt).
+
+   - Fixing Bugs: We spent a lot of time testing and debugging. Some of the AI-generated code didn't work with our module headers at first, so we had to fix those issues ourselves.
+
+Conclusion:
+In short, we used AI for the "boilerplate" stuff and as a reference for algorithms. The actual logic, putting the whole system together, and all the testing were done by our team to make sure we really understood what we were doing.
